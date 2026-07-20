@@ -1,0 +1,246 @@
+import React from "react";
+
+function LandingPage() {
+  return (
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-600 selection:text-white">
+      {/* Navbar */}
+      <nav className="border-b border-zinc-800 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-600/30">
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <span className="text-xl font-bold tracking-wider bg-linear-to-r from-white to-purple-400 bg-clip-text text-transparent">
+            HaloMeet
+          </span>
+        </div>
+
+        <div className="hidden md:flex items-center gap-8 text-zinc-400 font-medium">
+          <a
+            href="#features"
+            className="hover:text-purple-400 transition-colors"
+          >
+            Features
+          </a>
+          <a href="#about" className="hover:text-purple-400 transition-colors">
+            About
+          </a>
+          <a
+            href="#pricing"
+            className="hover:text-purple-400 transition-colors"
+          >
+            Pricing
+          </a>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button className="text-zinc-300 hover:text-white font-medium transition-colors px-4 py-2">
+            Sign In
+          </button>
+          <button className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-5 py-2 rounded-lg transition-all shadow-md shadow-purple-600/20 active:scale-95">
+            Sign Up
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <header className="relative px-6 pt-20 pb-16 max-w-6xl mx-auto text-center flex flex-col items-center justify-center overflow-hidden">
+        {/* Decorative Background Glows */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-purple-950/50 text-purple-400 border border-purple-800/50 mb-6 uppercase tracking-widest">
+          Next-Gen Video Conferencing
+        </span>
+
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight max-w-3xl leading-tight mb-6">
+          Connect Anyone, Anywhere with{" "}
+          <span className="bg-linear-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+            Flawless Video
+          </span>
+        </h1>
+
+        <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
+          A premium HaloMeet built for crystal-clear video calls, instant screen
+          sharing, and secure real-time collaboration.
+        </p>
+
+        {/* Action Cards / Buttons */}
+        <div className="grid sm:grid-cols-2 gap-4 w-full max-w-md mb-16">
+          <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-600/20 group">
+            <svg
+              className="w-5 h-5 group-hover:scale-110 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            New Meeting
+          </button>
+          <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-purple-600/50 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all">
+            <svg
+              className="w-5 h-5 text-purple-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+              />
+            </svg>
+            Join Meeting
+          </button>
+        </div>
+
+        {/* Mockup Showcase */}
+        <div className="w-full rounded-2xl border border-zinc-800 bg-zinc-950 p-3 shadow-2xl shadow-purple-950/20 relative group">
+          <div className="absolute inset-0 bg-linear-to-b from-purple-600/5 to-transparent rounded-2xl pointer-events-none group-hover:from-purple-600/10 transition-all duration-500" />
+          <div className="aspect-video w-full rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-600">
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-purple-950/40 border border-purple-800/40 flex items-center justify-center mx-auto mb-3">
+                <svg
+                  className="w-8 h-8 text-purple-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-zinc-400">
+                Interactive Video Stream Preview
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Features Section */}
+      <section
+        id="features"
+        className="px-6 py-20 bg-zinc-950 border-t border-zinc-900"
+      >
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">
+              Everything you need for seamless meetings
+            </h2>
+            <p className="text-zinc-400 max-w-xl mx-auto">
+              High-performance tools integrated directly into your browser with
+              zero installs required.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="p-6 rounded-xl border border-zinc-800 bg-black hover:border-purple-600/50 transition-colors">
+              <div className="w-12 h-12 rounded-lg bg-purple-950/50 border border-purple-800 text-purple-400 flex items-center justify-center mb-4">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">HD Video & Audio</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Crystal-clear standard definition to full HD video resolution
+                optimized for low bandwidth connections.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="p-6 rounded-xl border border-zinc-800 bg-black hover:border-purple-600/50 transition-colors">
+              <div className="w-12 h-12 rounded-lg bg-purple-950/50 border border-purple-800 text-purple-400 flex items-center justify-center mb-4">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Screen Sharing</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Share your entire screen, custom browser tabs, or specific
+                application windows instantly with one click.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="p-6 rounded-xl border border-zinc-800 bg-black hover:border-purple-600/50 transition-colors">
+              <div className="w-12 h-12 rounded-lg bg-purple-950/50 border border-purple-800 text-purple-400 flex items-center justify-center mb-4">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">
+                End-to-End Encryption
+              </h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Your security is paramount. Every meeting room is secured with
+                industry-standard modern encryptions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-900 py-8 px-6 text-center text-sm text-zinc-500">
+        <p>
+          &copy; {new Date().getFullYear()} V-ZOOM Clone. All rights reserved.
+        </p>
+      </footer>
+    </div>
+  );
+}
+
+export default LandingPage;

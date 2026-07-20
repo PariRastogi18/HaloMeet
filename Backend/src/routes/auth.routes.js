@@ -1,0 +1,34 @@
+import { Router } from "express";
+import {
+  signup,
+  login,
+  refreshToken,
+  getMe,
+  logout,
+  logoutAll,
+} from "../controllers/auth.controller.js";
+import { authorization } from "../middlewares/auth.middleware.js";
+import { verifyRefreshTokenMiddleware } from "../middlewares/verifyRefreshTokenMiddleware.js";
+import userModel from "../models/user.model.js";
+
+const router = Router();
+
+router.post("/signup", signup);
+router.post("/login", login);
+router.get("/verify", verifyRefreshTokenMiddleware, async (req, res) => {
+  const user = await userModel.findById(req.user.id).select("username");
+  res.status(200).json({
+    user: {
+      id: user._id,
+      username: user.username,
+    },
+  });
+});
+router.get("/logout", verifyRefreshTokenMiddleware, logout);
+router.get("/logoutAll", verifyRefreshTokenMiddleware, logoutAll);
+router.get("/get-me", authorization, getMe);
+router.get("/refreshToken", verifyRefreshTokenMiddleware, refreshToken);
+router.route("/add_to_activity");
+router.route("/get_all_activity");
+
+export default router;
