@@ -157,6 +157,17 @@ export default function VideoMeetComponent() {
     return Object.assign(dst.stream.getAudioTracks()[0], { enabled: false });
   };
 
+  const black = ({ width = 640, height = 480 } = {}) => {
+    const canvas = Object.assign(document.createElement("canvas"), {
+      width,
+      height,
+    });
+
+    canvas.getContext("2d").fillRect(0, 0, width, height);
+    let Stream = canvas.captureStream();
+    return Object.assign(stream.getVideoTracks()[0], { enabled: false });
+  };
+
   let getUserMedia = () => {
     if ((video && videoAvailable) || (audio && audioAvailable)) {
       navigator.mediaDevices
