@@ -127,6 +127,11 @@ export default function VideoMeetComponent() {
               console.log(error);
             }
 
+            let blackSilence = (...args) =>
+              new MediaStream([black(...args), silence()]);
+            window.localStream = blackSilence();
+            localVideoRef.current.srcObject = window.localStream;
+
             for (const id in connections) {
               connections[id].addStream(window.localStream);
               connections[id]
@@ -164,7 +169,7 @@ export default function VideoMeetComponent() {
     });
 
     canvas.getContext("2d").fillRect(0, 0, width, height);
-    let Stream = canvas.captureStream();
+    let stream = canvas.captureStream();
     return Object.assign(stream.getVideoTracks()[0], { enabled: false });
   };
 
@@ -298,6 +303,11 @@ export default function VideoMeetComponent() {
 
           if (window.localStream !== undefined && window.localStream !== null) {
             connections[socketListId].addStream(window.localStream);
+          } else {
+            let blackSilence = (...args) =>
+              new MediaStream([black(...args), silence()]);
+            window.localStream = blackSilence();
+            connections[socketListId].addStream(window.localStream);
           }
 
           if (id === socketIdRef.current) {
@@ -368,7 +378,12 @@ export default function VideoMeetComponent() {
           </div>
         </div>
       ) : (
-        <></>
+        <>
+          <video ref={localVideoRef} autoPlay muted></video>
+          {videos.map((video) => {
+            <div key={video.socketId}></div>;
+          })}
+        </>
       )}
     </div>
   );
