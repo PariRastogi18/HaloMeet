@@ -18,8 +18,8 @@ export default function VideoMeetComponent() {
   let [videoAvailable, setVideoAvailable] = useState(true);
   let [audioAvailable, setAudioAvailable] = useState(true);
 
-  let [video, setVideo] = useState([]);
-  let [audio, setAudio] = useState();
+  const [video, setVideo] = useState([]);
+  const [audio, setAudio] = useState();
 
   let [screen, setScreen] = useState();
 
@@ -99,20 +99,21 @@ export default function VideoMeetComponent() {
       if (id === socketIdRef.current) {
         continue;
       }
-      connections[id].addStream(window.localStream);
-
-      connections[id]
-        .createOffer()
-        .then((description) => {
-          connections[id].setLocalDescription(description).then(() => {
-            socketRef.current.emit(
-              "signal",
-              id,
-              JSON.stringify({ sdp: connections[id].localDescription }),
-            );
-          });
-        })
-        .catch((e) => console.log(e));
+      if (!connections[id].getLocalStreams().length) {
+        connections[id].addStream(window.localStream);
+      }
+      // connections[id]
+      //   .createOffer()
+      //   .then((description) => {
+      //     connections[id].setLocalDescription(description).then(() => {
+      //       socketRef.current.emit(
+      //         "signal",
+      //         id,
+      //         JSON.stringify({ sdp: connections[id].localDescription }),
+      //       );
+      //     });
+      //   })
+      //   .catch((e) => console.log(e));
 
       stream.getTracks().forEach(
         (track) =>
@@ -133,19 +134,24 @@ export default function VideoMeetComponent() {
             localVideoRef.current.srcObject = window.localStream;
 
             for (const id in connections) {
-              connections[id].addStream(window.localStream);
-              connections[id]
-                .createOffer()
-                .then((description) => {
-                  connections[id].setLocalDescription(description).then(() => {
-                    socketRef.current.emit(
-                      "signal",
-                      id,
-                      JSON.stringify({ sdp: connections[id].localDescription }),
-                    );
-                  });
-                })
-                .catch((e) => console.log(e));
+              if (id === socketIdRef.current) {
+                continue;
+              }
+              if (connections[id].getLocalStreams().length === 0) {
+                connections[id].addStream(window.localStream);
+              }
+              // connections[id]
+              //   .createOffer()
+              //   .then((description) => {
+              //     connections[id].setLocalDescription(description).then(() => {
+              //       socketRef.current.emit(
+              //         "signal",
+              //         id,
+              //         JSON.stringify({ sdp: connections[id].localDescription }),
+              //       );
+              //     });
+              //   })
+              //   .catch((e) => console.log(e));
             }
           }),
       );
@@ -194,7 +200,29 @@ export default function VideoMeetComponent() {
     if (video !== undefined && audio !== undefined) {
       getUserMedia();
     }
-  }, [audio, video]);
+  }, [video, audio]);
+
+  function renegotiate(id) {
+    const pc = connections[id];
+
+    if (pc.signalingState !== "stable") {
+      console.log("Skip renegotiation:", pc.signalingState);
+      return;
+    }
+
+    pc.createOffer()
+      .then((offer) => pc.setLocalDescription(offer))
+      .then(() => {
+        socketRef.current.emit(
+          "signal",
+          id,
+          JSON.stringify({
+            sdp: pc.localDescription,
+          }),
+        );
+      })
+      .catch(console.error);
+  }
 
   let gotMessagesFromServer = (fromId, message) => {
     const signal = JSON.parse(message);
@@ -293,10 +321,20 @@ export default function VideoMeetComponent() {
                 playsinline: true,
               };
 
-              setVideo((video) => {
-                const updateVideos = [...video, newVideo];
-                videoRef.current = updateVideos;
-                return updateVideos;
+              // setVideo((video) => {
+              //   const updateVideos = [...video, newVideo];
+              //   videoRef.current = updateVideos;
+              //   return updateVideos;
+              // });
+
+              setVideo((prevVideos) => {
+                // Ensure prevVideos is an array before spreading; fallback to empty array if not
+                const currentVideos = Array.isArray(prevVideos)
+                  ? prevVideos
+                  : [];
+                const updatedVideos = [...currentVideos, newVideo];
+                videoRef.current = updatedVideos;
+                return updatedVideos;
               });
             }
           };
@@ -311,33 +349,30 @@ export default function VideoMeetComponent() {
           }
 
           if (id === socketIdRef.current) {
-            for (let id2 in object) {
+            for (let id2 in connections) {
               if (id2 === socketIdRef.current) {
                 continue;
               }
-
-              try {
-                window.localStream.getTracks().forEach((track) => {
-                  connections[id2].addTrack(track, window.localStream);
-                });
-                // connections[id2].addStream(window.localStream);
-              } catch (error) {
-                console.log(error);
+              if (
+                id === socketIdRef.current &&
+                socketListId !== socketIdRef.current
+              ) {
+                renegotiate(id2); //this is for create offer
               }
-              connections[id2].createOffer().then((description) => {
-                connections[id2]
-                  .setLocalDescription(description)
-                  .then(() => {
-                    socketRef.current.emit(
-                      "signal",
-                      id2,
-                      JSON.stringify({
-                        sdp: connections[id2].localDescription,
-                      }),
-                    );
-                  })
-                  .catch((e) => console.log(e));
-              });
+              // connections[id2].createOffer().then((description) => {
+              //   connections[id2]
+              //     .setLocalDescription(description)
+              //     .then(() => {
+              //       socketRef.current.emit(
+              //         "signal",
+              //         id2,
+              //         JSON.stringify({
+              //           sdp: connections[id2].localDescription,
+              //         }),
+              //       );
+              //     })
+              //     .catch((e) => console.log(e));
+              // });
             }
           }
         });
