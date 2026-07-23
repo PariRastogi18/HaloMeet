@@ -3,6 +3,8 @@ import TextField from "@mui/material/TextField";
 import "../styles/videoComponent.css";
 import Button from "@mui/material/Button";
 import io from "socket.io-client";
+// import "../styles/videoComponent.css";
+import Draggable from "react-draggable";
 
 const server_url = "http://localhost:5000";
 const connections = {};
@@ -11,35 +13,35 @@ const peerConfigConnections = {
   iceServers: [{ urls: "stun:stun1.l.google.com:19302" }],
 };
 export default function VideoMeetComponent() {
-  let socketRef = useRef();
-  let socketIdRef = useRef();
-  let localVideoRef = useRef(null);
+  const socketRef = useRef();
+  const socketIdRef = useRef();
+  const localVideoRef = useRef(null);
 
-  let [videoAvailable, setVideoAvailable] = useState(true);
-  let [audioAvailable, setAudioAvailable] = useState(true);
+  const [videoAvailable, setVideoAvailable] = useState(true);
+  const [audioAvailable, setAudioAvailable] = useState(true);
 
-  const [video, setVideo] = useState([]);
+  const [video, setVideo] = useState();
   const [audio, setAudio] = useState();
 
-  let [screen, setScreen] = useState();
+  const [screen, setScreen] = useState();
 
-  let [showModel, setShowModel] = useState();
+  const [showModel, setShowModel] = useState();
 
-  let [screenAvailable, setScreenAvailable] = useState();
+  const [screenAvailable, setScreenAvailable] = useState();
 
-  let [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]);
 
-  let [message, setMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-  let [newMessages, setNewMessages] = useState(0);
+  const [newMessages, setNewMessages] = useState(0);
 
-  let [askForUsername, setAskForUsername] = useState(true);
+  const [askForUsername, setAskForUsername] = useState(true);
 
-  let [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
 
   const videoRef = useRef([]);
 
-  let [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState([]);
 
   const getPermissions = async () => {
     try {
@@ -93,7 +95,9 @@ export default function VideoMeetComponent() {
     }
 
     window.localStream = stream;
-    localVideoRef.current.srcObject = stream;
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = stream;
+    }
 
     for (const id in connections) {
       if (id === socketIdRef.current) {
@@ -276,7 +280,7 @@ export default function VideoMeetComponent() {
       socketRef.current.on("chat-msg", addMsg);
 
       socketRef.current.on("user-left", (id) => {
-        setVideo((video) => video.filter((video) => video.socketId !== id));
+        setVideos((video) => video.filter((video) => video.socketId !== id));
       });
 
       socketRef.current.on("user-joined", (id, clients) => {
@@ -301,7 +305,7 @@ export default function VideoMeetComponent() {
             );
 
             if (videoExists) {
-              setVideo((videos) => {
+              setVideos((videos) => {
                 {
                   const updateVideos = videos.map((video) =>
                     video.socketId === socketListId
@@ -327,7 +331,7 @@ export default function VideoMeetComponent() {
               //   return updateVideos;
               // });
 
-              setVideo((prevVideos) => {
+              setVideos((prevVideos) => {
                 // Ensure prevVideos is an array before spreading; fallback to empty array if not
                 const currentVideos = Array.isArray(prevVideos)
                   ? prevVideos
@@ -384,6 +388,7 @@ export default function VideoMeetComponent() {
     setVideo(videoAvailable);
     setAudio(audioAvailable);
     setUsername("");
+    setAskForUsername(false);
     connectToSocketServer();
   };
 
@@ -413,12 +418,82 @@ export default function VideoMeetComponent() {
           </div>
         </div>
       ) : (
-        <>
-          <video ref={localVideoRef} autoPlay muted></video>
-          {videos.map((video) => {
-            <div key={video.socketId}></div>;
-          })}
-        </>
+        <div className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-purple-950 text-white relative overflow-hidden">
+          {/* Videos Grid */}
+          <div className="flex flex-wrap justify-center gap-6 p-8">
+            {/* Remote Users */}
+            {videos?.map((video) => (
+              <div
+                key={video.socketId}
+                className="relative w-[360px] h-[220px] rounded-2xl overflow-hidden
+                   bg-black/50 border border-purple-500/40
+                   shadow-[0_0_30px_rgba(168,85,247,0.25)]
+                   backdrop-blur-md"
+              >
+                <video
+                  data-socket={video.socketId}
+                  ref={(ref) => {
+                    if (ref && video.stream) {
+                      ref.srcObject = video.stream;
+                    }
+                  }}
+                  autoPlay
+                  className="w-full h-full object-cover"
+                />
+
+                <div className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 text-sm">
+                  {video.socketId}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Local Video (Top Right) */}
+          <Draggable bounds="parent">
+            <div
+              className="absolute z-50 w-72 h-44 rounded-2xl overflow-hidden
+               border-2 border-purple-500
+               bg-black cursor-move
+               shadow-[0_0_35px_rgba(168,85,247,0.5)]"
+            >
+              <video
+                ref={localVideoRef}
+                autoPlay
+                muted
+                className="w-full h-full object-cover"
+              />
+
+              <div className="absolute bottom-2 left-2 px-3 py-1 rounded-full bg-purple-600 text-sm">
+                You
+              </div>
+            </div>
+          </Draggable>
+
+          {/* Bottom Controls */}
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
+            <div className="flex items-center gap-5 bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-full px-8 py-4 shadow-2xl">
+              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
+                🎤
+              </button>
+
+              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
+                📹
+              </button>
+
+              <button className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 flex items-center justify-center text-2xl shadow-lg">
+                📞
+              </button>
+
+              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
+                💬
+              </button>
+
+              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
+                ⚙️
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

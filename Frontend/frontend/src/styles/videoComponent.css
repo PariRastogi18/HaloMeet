@@ -1,0 +1,12 @@
+.videoMeetContainer {
+  position: relative;
+  height: 100vh;
+  background-color: black;
+}
+
+.meetUserVideo {
+  position: absolute;
+  bottom: 0;
+  height: 20vh;
+  width: auto;
+}
