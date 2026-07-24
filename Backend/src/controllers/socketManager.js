@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 
 const connections = {};
 const socketToRoom = {};
+const socketToUsername = {};
 const messages = {};
 const timeOnline = {};
 
@@ -17,20 +18,25 @@ export const connectToSocket = (server) => {
 
   io.on("connection", (socket) => {
     console.log("Something connected", socket.id);
-    socket.on("join-call", (path) => {
+    socket.on("join-call", ({ path, username }) => {
       if (connections[path] === undefined) {
         connections[path] = [];
       }
       connections[path].push(socket.id);
       socketToRoom[socket.id] = path;
+      socketToUsername[socket.id] = username;
       timeOnline[socket.id] = new Date();
 
+      const clients = connections[path].map((id) => ({
+        socketId: id,
+        username: socketToUsername[id],
+      }));
+
       for (let index = 0; index < connections[path].length; index++) {
-        io.to(connections[path][index]).emit(
-          "user-joined",
-          socket.id,
-          connections[path],
-        );
+        io.to(connections[path][index]).emit("user-joined", {
+          id: socket.id,
+          clients,
+        });
       }
 
       if (messages[path] !== undefined) {

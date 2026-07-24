@@ -4,7 +4,8 @@ import "../styles/videoComponent.css";
 import Button from "@mui/material/Button";
 import io from "socket.io-client";
 // import "../styles/videoComponent.css";
-import Draggable from "react-draggable";
+// import Draggable from "react-draggable";
+import { Rnd } from "react-rnd";
 
 const server_url = "http://localhost:5000";
 const connections = {};
@@ -54,8 +55,8 @@ export default function VideoMeetComponent() {
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
         audio: true,
+        video: true,
       });
 
       let hasVideo = stream.getVideoTracks().length > 0;
@@ -186,7 +187,7 @@ export default function VideoMeetComponent() {
   let getUserMedia = () => {
     if ((video && videoAvailable) || (audio && audioAvailable)) {
       navigator.mediaDevices
-        .getUserMedia({ video: video, audio: audio })
+        .getUserMedia({ audio: audio, video: video })
         .then(getUserMediaSuccess)
         .then((stream) => {})
         .catch((e) => {
@@ -204,7 +205,7 @@ export default function VideoMeetComponent() {
     if (video !== undefined && audio !== undefined) {
       getUserMedia();
     }
-  }, [video, audio]);
+  }, [audio, video]);
 
   function renegotiate(id) {
     const pc = connections[id];
@@ -273,7 +274,10 @@ export default function VideoMeetComponent() {
 
     socketRef.current.on("connect", () => {
       // console.log(socketRef.current.id);
-      socketRef.current.emit("join-call", window.location.href);
+      socketRef.current.emit("join-call", {
+        path: window.location.href,
+        username,
+      });
 
       socketIdRef.current = socketRef.current.id;
 
@@ -283,32 +287,32 @@ export default function VideoMeetComponent() {
         setVideos((video) => video.filter((video) => video.socketId !== id));
       });
 
-      socketRef.current.on("user-joined", (id, clients) => {
-        clients.forEach((socketListId) => {
-          connections[socketListId] = new RTCPeerConnection(
+      socketRef.current.on("user-joined", ({ id, clients }) => {
+        clients.forEach((client) => {
+          connections[client.socketId] = new RTCPeerConnection(
             peerConfigConnections,
           );
 
-          connections[socketListId].onicecandidate = (event) => {
+          connections[client.socketId].onicecandidate = (event) => {
             if (event.candidate !== null) {
               socketRef.current.emit(
                 "signal",
-                socketListId,
+                client.socketId,
                 JSON.stringify({ ice: event.candidate }),
               );
             }
           };
 
-          connections[socketListId].onaddstream = (event) => {
+          connections[client.socketId].onaddstream = (event) => {
             const videoExists = videoRef.current.find(
-              (video) => video.socketId === socketListId,
+              (video) => video.socketId === client.socketId,
             );
 
             if (videoExists) {
               setVideos((videos) => {
                 {
                   const updateVideos = videos.map((video) =>
-                    video.socketId === socketListId
+                    video.socketId === client.socketId
                       ? { ...video, stream: event.stream }
                       : video,
                   );
@@ -319,7 +323,8 @@ export default function VideoMeetComponent() {
               });
             } else {
               const newVideo = {
-                socketId: socketListId,
+                socketId: client.socketId,
+                username: client.username,
                 stream: event.stream,
                 autoPlay: true,
                 playsinline: true,
@@ -344,12 +349,12 @@ export default function VideoMeetComponent() {
           };
 
           if (window.localStream !== undefined && window.localStream !== null) {
-            connections[socketListId].addStream(window.localStream);
+            connections[client.socketId].addStream(window.localStream);
           } else {
             let blackSilence = (...args) =>
               new MediaStream([black(...args), silence()]);
             window.localStream = blackSilence();
-            connections[socketListId].addStream(window.localStream);
+            connections[client.socketId].addStream(window.localStream);
           }
 
           if (id === socketIdRef.current) {
@@ -359,7 +364,7 @@ export default function VideoMeetComponent() {
               }
               if (
                 id === socketIdRef.current &&
-                socketListId !== socketIdRef.current
+                client.socketId !== socketIdRef.current
               ) {
                 renegotiate(id2); //this is for create offer
               }
@@ -387,8 +392,8 @@ export default function VideoMeetComponent() {
   let getMedia = () => {
     setVideo(videoAvailable);
     setAudio(audioAvailable);
-    setUsername("");
     setAskForUsername(false);
+    setUsername("");
     connectToSocketServer();
   };
 
@@ -420,12 +425,12 @@ export default function VideoMeetComponent() {
       ) : (
         <div className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-purple-950 text-white relative overflow-hidden">
           {/* Videos Grid */}
-          <div className="flex flex-wrap justify-center gap-6 p-8">
+          <div className="flex flex-wrap justify-start gap-6 p-8">
             {/* Remote Users */}
             {videos?.map((video) => (
               <div
                 key={video.socketId}
-                className="relative w-[360px] h-[220px] rounded-2xl overflow-hidden
+                className="relative w-[320px] h-[220px] rounded-2xl overflow-hidden
                    bg-black/50 border border-purple-500/40
                    shadow-[0_0_30px_rgba(168,85,247,0.25)]
                    backdrop-blur-md"
@@ -442,32 +447,36 @@ export default function VideoMeetComponent() {
                 />
 
                 <div className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 text-sm">
-                  {video.socketId}
+                  {video.username}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Local Video (Top Right) */}
-          <Draggable bounds="parent">
-            <div
-              className="absolute z-50 w-72 h-44 rounded-2xl overflow-hidden
-               border-2 border-purple-500
-               bg-black cursor-move
-               shadow-[0_0_35px_rgba(168,85,247,0.5)]"
-            >
-              <video
-                ref={localVideoRef}
-                autoPlay
-                muted
-                className="w-full h-full object-cover"
-              />
-
-              <div className="absolute bottom-2 left-2 px-3 py-1 rounded-full bg-purple-600 text-sm">
-                You
-              </div>
+          {/* Local Video (Top Right) - Draggable */}
+          <Rnd
+            default={{
+              x: window.innerWidth - 340,
+              y: 20,
+              width: 300,
+              height: 180,
+            }}
+            bounds="window"
+            minWidth={220}
+            minHeight={140}
+            style={{ zIndex: 50 }}
+            className="rounded-2xl overflow-hidden border-2 border-purple-500 bg-black shadow-[0_0_35px_rgba(168,85,247,0.5)] cursor-move"
+          >
+            <video
+              ref={localVideoRef}
+              autoPlay
+              muted
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-2 left-2 px-3 py-1 rounded-full bg-purple-600 text-sm text-white">
+              You
             </div>
-          </Draggable>
+          </Rnd>
 
           {/* Bottom Controls */}
           <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
