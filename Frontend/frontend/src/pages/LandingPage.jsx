@@ -1,61 +1,14 @@
+import { Link } from "react-router-dom";
 import React from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-600 selection:text-white">
-      {/* Navbar */}
-      <nav className="border-b border-zinc-800 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-600/30">
-            <svg
-              className="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
-          <span className="text-xl font-bold tracking-wider bg-linear-to-r from-white to-purple-400 bg-clip-text text-transparent">
-            HaloMeet
-          </span>
-        </div>
-
-        <div className="hidden md:flex items-center gap-8 text-zinc-400 font-medium">
-          <a
-            href="#features"
-            className="hover:text-purple-400 transition-colors"
-          >
-            Features
-          </a>
-          <a href="#about" className="hover:text-purple-400 transition-colors">
-            About
-          </a>
-          <a
-            href="#pricing"
-            className="hover:text-purple-400 transition-colors"
-          >
-            Pricing
-          </a>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <button className="text-zinc-300 hover:text-white font-medium transition-colors px-4 py-2">
-            Sign In
-          </button>
-          <button className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-5 py-2 rounded-lg transition-all shadow-md shadow-purple-600/20 active:scale-95">
-            Sign Up
-          </button>
-        </div>
-      </nav>
-
+    <div className="min-h-screen bg-black dark:bg-gray-900 text-white font-sans selection:bg-purple-600 selection:text-white">
+      <Navbar />
       {/* Hero Section */}
-      <header className="relative px-6 pt-20 pb-16 max-w-6xl mx-auto text-center flex flex-col items-center justify-center overflow-hidden">
+      <header className="relative px-6 pt-11 pb-16 max-w-6xl mx-auto text-center flex flex-col items-center justify-center overflow-hidden">
         {/* Decorative Background Glows */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -232,13 +185,7 @@ function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-900 py-8 px-6 text-center text-sm text-zinc-500">
-        <p>
-          &copy; {new Date().getFullYear()} V-ZOOM Clone. All rights reserved.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

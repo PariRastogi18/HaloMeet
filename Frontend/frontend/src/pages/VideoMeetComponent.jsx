@@ -3,6 +3,20 @@ import TextField from "@mui/material/TextField";
 import "../styles/videoComponent.css";
 import Button from "@mui/material/Button";
 import io from "socket.io-client";
+import {
+  Mic,
+  MicOff,
+  Video,
+  VideoOff,
+  PhoneOff,
+  Settings,
+  MonitorUp,
+  MonitorOff,
+  MessageCircle,
+  Send,
+  X,
+} from "lucide-react";
+
 // import "../styles/videoComponent.css";
 // import Draggable from "react-draggable";
 import { Rnd } from "react-rnd";
@@ -24,9 +38,9 @@ export default function VideoMeetComponent() {
   const [video, setVideo] = useState();
   const [audio, setAudio] = useState();
 
-  const [screen, setScreen] = useState();
+  const [screen, setScreen] = useState(false);
 
-  const [showModel, setShowModel] = useState();
+  const [showModel, setShowModel] = useState(false);
 
   const [screenAvailable, setScreenAvailable] = useState();
 
@@ -101,24 +115,13 @@ export default function VideoMeetComponent() {
     }
 
     for (const id in connections) {
-      if (id === socketIdRef.current) {
-        continue;
+      if (id === socketIdRef.current) continue;
+      const streams = connections[id].getLocalStreams();
+      if (streams.length > 0) {
+        connections[id].removeStream(streams[0]);
       }
-      if (!connections[id].getLocalStreams().length) {
-        connections[id].addStream(window.localStream);
-      }
-      // connections[id]
-      //   .createOffer()
-      //   .then((description) => {
-      //     connections[id].setLocalDescription(description).then(() => {
-      //       socketRef.current.emit(
-      //         "signal",
-      //         id,
-      //         JSON.stringify({ sdp: connections[id].localDescription }),
-      //       );
-      //     });
-      //   })
-      //   .catch((e) => console.log(e));
+      connections[id].addStream(window.localStream);
+      renegotiate(id);
 
       stream.getTracks().forEach(
         (track) =>
@@ -144,19 +147,8 @@ export default function VideoMeetComponent() {
               }
               if (connections[id].getLocalStreams().length === 0) {
                 connections[id].addStream(window.localStream);
+                renegotiate(id);
               }
-              // connections[id]
-              //   .createOffer()
-              //   .then((description) => {
-              //     connections[id].setLocalDescription(description).then(() => {
-              //       socketRef.current.emit(
-              //         "signal",
-              //         id,
-              //         JSON.stringify({ sdp: connections[id].localDescription }),
-              //       );
-              //     });
-              //   })
-              //   .catch((e) => console.log(e));
             }
           }),
       );
@@ -209,7 +201,6 @@ export default function VideoMeetComponent() {
 
   function renegotiate(id) {
     const pc = connections[id];
-
     if (pc.signalingState !== "stable") {
       console.log("Skip renegotiation:", pc.signalingState);
       return;
@@ -265,11 +256,15 @@ export default function VideoMeetComponent() {
     }
   };
 
-  let addMsg = (data, sender) => {};
+  let addMsg = (data, sender, socketIdSender) => {
+    setMessages((prevMsgs) => [...prevMsgs, { sender, data, socketIdSender }]);
+    // if (socketIdSender === socketIdRef.current) {
+    //   setMessages((prevMsgs) => prevMsgs + 1);
+    // }
+  };
 
   let connectToSocketServer = () => {
     socketRef.current = io.connect(server_url);
-
     socketRef.current.on("signal", gotMessagesFromServer);
 
     socketRef.current.on("connect", () => {
@@ -330,12 +325,6 @@ export default function VideoMeetComponent() {
                 playsinline: true,
               };
 
-              // setVideo((video) => {
-              //   const updateVideos = [...video, newVideo];
-              //   videoRef.current = updateVideos;
-              //   return updateVideos;
-              // });
-
               setVideos((prevVideos) => {
                 // Ensure prevVideos is an array before spreading; fallback to empty array if not
                 const currentVideos = Array.isArray(prevVideos)
@@ -368,20 +357,6 @@ export default function VideoMeetComponent() {
               ) {
                 renegotiate(id2); //this is for create offer
               }
-              // connections[id2].createOffer().then((description) => {
-              //   connections[id2]
-              //     .setLocalDescription(description)
-              //     .then(() => {
-              //       socketRef.current.emit(
-              //         "signal",
-              //         id2,
-              //         JSON.stringify({
-              //           sdp: connections[id2].localDescription,
-              //         }),
-              //       );
-              //     })
-              //     .catch((e) => console.log(e));
-              // });
             }
           }
         });
@@ -393,8 +368,80 @@ export default function VideoMeetComponent() {
     setVideo(videoAvailable);
     setAudio(audioAvailable);
     setAskForUsername(false);
-    setUsername("");
     connectToSocketServer();
+  };
+
+  const toggleMic = () => {
+    if (window.localStream) {
+      window.localStream.getAudioTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+    }
+    setAudio((prev) => !prev);
+  };
+
+  const toggleVideo = () => {
+    if (window.localStream) {
+      window.localStream.getVideoTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+    }
+    setVideo((prev) => !prev);
+  };
+
+  const leaveCall = () => {
+    if (window.localStream) {
+      window.localStream.getTracks().forEach((track) => track.stop());
+    }
+    socketRef.current.disconnect();
+    window.location.href = "/";
+  };
+
+  const getDisplayMediaSuccess = (stream) => {
+    window.localStream.getTracks().forEach((track) => track.stop());
+    window.localStream = stream;
+    localVideoRef.current.srcObject = stream;
+
+    for (const id in connections) {
+      if (id === socketIdRef.current) {
+        continue;
+      }
+      const streams = connections[id].getLocalStreams();
+      if (streams.length > 0) {
+        connections[id].removeStream(streams[0]);
+      }
+      connections[id].addStream(stream);
+      renegotiate(id);
+    }
+
+    stream.getVideoTracks()[0].onended = () => {
+      setScreen(false);
+      getUserMedia();
+    };
+  };
+
+  const toggleScreenShare = async () => {
+    if (!screen) {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+        });
+
+        getDisplayMediaSuccess(stream);
+        setScreen(true);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      getUserMedia();
+      setScreen(false);
+    }
+  };
+
+  const sendMessage = () => {
+    if (!message.trim()) return;
+    socketRef.current.emit("chat-msg", message, username);
+    setMessage("");
   };
 
   return (
@@ -423,17 +470,17 @@ export default function VideoMeetComponent() {
           </div>
         </div>
       ) : (
-        <div className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-purple-950 text-white relative overflow-hidden">
+        <div className="relative min-h-screen bg-linear-to-br from-black via-gray-950 to-purple-950 text-white overflow-hidden">
           {/* Videos Grid */}
           <div className="flex flex-wrap justify-start gap-6 p-8">
             {/* Remote Users */}
             {videos?.map((video) => (
               <div
                 key={video.socketId}
-                className="relative w-[320px] h-[220px] rounded-2xl overflow-hidden
-                   bg-black/50 border border-purple-500/40
-                   shadow-[0_0_30px_rgba(168,85,247,0.25)]
-                   backdrop-blur-md"
+                className="relative w-[320px] h-55 rounded-2xl overflow-hidden
+                  bg-black/50 border border-purple-500/40
+                  shadow-[0_0_30px_rgba(168,85,247,0.25)]
+                  backdrop-blur-md"
               >
                 <video
                   data-socket={video.socketId}
@@ -478,27 +525,150 @@ export default function VideoMeetComponent() {
             </div>
           </Rnd>
 
+          {showModel && (
+            <div className="fixed top-0 right-0 h-screen w-90 bg-[#16131f]/95 backdrop-blur-xl border-l border-purple-500/30 shadow-2xl z-50 flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-purple-500/20">
+                <h2 className="text-xl font-semibold text-white">
+                  Meeting Chat
+                </h2>
+
+                <button
+                  onClick={() => setShowModel(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  <X size={22} className="text-gray-300 hover:text-white" />
+                </button>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${
+                      msg.socketIdSender === socketIdRef.current
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[75%] rounded-2xl px-4 py-2 ${
+                        msg.socketIdSender === socketIdRef.current
+                          ? "bg-purple-600 text-white"
+                          : "bg-gray-800 text-gray-100"
+                      }`}
+                    >
+                      <p className="text-xs text-purple-300 mb-1 font-semibold">
+                        {msg.socketIdSender === socketIdRef.current
+                          ? "You"
+                          : msg.sender}
+                      </p>
+
+                      <p>{msg.data}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Input */}
+              <div className="border-t border-purple-500/20 p-4">
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    placeholder="Type a message..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        sendMessage();
+                      }
+                    }}
+                    className="flex-1 bg-gray-900 border border-purple-500/20 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+                  />
+
+                  <button
+                    onClick={sendMessage}
+                    className="bg-purple-600 hover:bg-purple-700 rounded-xl px-5 text-white font-medium"
+                  >
+                    <Send size={20} className="text-white" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Bottom Controls */}
           <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
             <div className="flex items-center gap-5 bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-full px-8 py-4 shadow-2xl">
-              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
-                🎤
+              {/* Mic */}
+              <button
+                onClick={toggleMic}
+                className={`w-14 h-14 rounded-full flex items-center justify-center transition
+      ${
+        audio
+          ? "bg-gray-800 hover:bg-purple-700"
+          : "bg-red-600 hover:bg-red-700"
+      }`}
+              >
+                {audio ? <Mic size={24} /> : <MicOff size={24} />}
               </button>
 
-              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
-                📹
+              {/* Camera */}
+              <button
+                onClick={toggleVideo}
+                className={`w-14 h-14 rounded-full flex items-center justify-center transition
+      ${
+        video
+          ? "bg-gray-800 hover:bg-purple-700"
+          : "bg-red-600 hover:bg-red-700"
+      }`}
+              >
+                {video ? <Video size={24} /> : <VideoOff size={24} />}
               </button>
 
-              <button className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 flex items-center justify-center text-2xl shadow-lg">
-                📞
+              {/* Leave */}
+              <button
+                onClick={leaveCall}
+                className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-lg transition"
+              >
+                <PhoneOff size={28} />
               </button>
 
-              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
-                💬
+              {/* Chat */}
+              <button
+                onClick={() => setShowModel((prev) => !prev)}
+                className={`relative w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition flex items-center justify-center ${
+                  showModel
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-gray-800 hover:bg-purple-700"
+                }`}
+              >
+                <MessageCircle size={24} />
+
+                {newMessages > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">
+                    {newMessages}
+                  </span>
+                )}
               </button>
 
-              <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center text-xl">
-                ⚙️
+              {/* Settings */}
+              {/* <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 flex items-center justify-center transition">
+                <Settings size={24} />
+              </button> */}
+
+              {/* {Screen Sharing button} */}
+              <button
+                onClick={toggleScreenShare}
+                className={`w-14 h-14 rounded-full flex items-center justify-center transition
+  ${
+    screen
+      ? "bg-green-600 hover:bg-green-700"
+      : "bg-gray-800 hover:bg-purple-700"
+  }`}
+              >
+                {screen ? <MonitorOff size={24} /> : <MonitorUp size={24} />}
               </button>
             </div>
           </div>

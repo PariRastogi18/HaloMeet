@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -79,12 +81,14 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-black dark:bg-gray-900 text-white font-sans selection:bg-purple-600 selection:text-white">
+      {/* Navbar */}
+      <Navbar />
       {/* Decorative Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Container */}
-      <div className="w-full max-w-md bg-zinc-950/60 backdrop-blur-xl border border-zinc-800/80 rounded-2xl p-8 shadow-2xl relative z-10 my-8">
+      <div className="w-full max-w-md bg-zinc-950/60 backdrop-blur-xl border border-zinc-800/80 rounded-2xl p-8 shadow-2xl relative z-10 my-8 mx-auto">
         {/* Logo and Header */}
         <div className="text-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-600/20 mx-auto mb-4">
@@ -247,6 +251,8 @@ export default function SignUp() {
           </Link>
         </p>
       </div>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

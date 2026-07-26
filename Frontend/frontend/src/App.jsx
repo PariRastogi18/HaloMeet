@@ -5,6 +5,10 @@ import SignUp from "./pages/SignUpPage";
 import Dashboard from "./pages/Dashboard";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import VideoMeetComponent from "./pages/VideoMeetComponent";
+import Pricing from "./pages/Pricing";
+import NotFoundPage from "./pages/NotFoundPage";
+import FeaturePage from "./pages/FeaturePage";
+import AboutPage from "./pages/AboutPage";
 
 function App() {
   return (
@@ -12,6 +16,10 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/signIn" element={<SignInPage />} />
       <Route path="/signUp" element={<SignUp />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/notfound" element={<NotFoundPage />} />
+      <Route path="/features" element={<FeaturePage />} />
+      <Route path="/about" element={<AboutPage />} />
 
       <Route
         path="/dashboard"
