@@ -86,6 +86,12 @@ export default function AboutPage() {
 
         <div className="h-96 rounded-3xl bg-linear-to-br from-purple-600/30 to-transparent border border-purple-500/30 flex items-center justify-center">
           <Video size={120} className="text-purple-400" />
+          <img
+            src="/images/videoCallImg.png"
+            alt="VideoCallImg"
+            height={"24rem"}
+            style={{ borderRadius: "1.5rem" }}
+          />
         </div>
       </section>
 

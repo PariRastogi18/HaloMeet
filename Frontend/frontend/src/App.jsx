@@ -9,6 +9,7 @@ import Pricing from "./pages/Pricing";
 import NotFoundPage from "./pages/NotFoundPage";
 import FeaturePage from "./pages/FeaturePage";
 import AboutPage from "./pages/AboutPage";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/notfound" element={<NotFoundPage />} />
       <Route path="/features" element={<FeaturePage />} />
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/forgotPassword" element={<ForgotPassword />} />
 
       <Route
         path="/dashboard"

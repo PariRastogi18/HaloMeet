@@ -150,12 +150,12 @@ export default function SignInPage() {
               >
                 Password
               </label>
-              <a
-                href="#forgot"
+              <Link
+                to={"/forgotPassword"}
                 className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
             <input
               type="password"

@@ -68,26 +68,9 @@ function LandingPage() {
         <div className="w-full rounded-2xl border border-zinc-800 bg-zinc-950 p-3 shadow-2xl shadow-purple-950/20 relative group">
           <div className="absolute inset-0 bg-linear-to-b from-purple-600/5 to-transparent rounded-2xl pointer-events-none group-hover:from-purple-600/10 transition-all duration-500" />
           <div className="aspect-video w-full rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-600">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-purple-950/40 border border-purple-800/40 flex items-center justify-center mx-auto mb-3">
-                <svg
-                  className="w-8 h-8 text-purple-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <p className="text-sm font-medium text-zinc-400">
-                Interactive Video Stream Preview
-              </p>
-            </div>
+            <video className="w-full rounded-base" autoPlay muted>
+              <source src="/videos/landingVideo.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </header>
