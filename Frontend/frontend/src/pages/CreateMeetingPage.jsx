@@ -1,0 +1,142 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Video, Copy, Sparkles, CheckCircle2, Link2 } from "lucide-react";
+
+export default function CreateMeetingPage() {
+  const navigate = useNavigate();
+
+  const [meetingName, setMeetingName] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [meetingLink, setMeetingLink] = useState("");
+
+  const generateMeeting = () => {
+    const id = crypto.randomUUID().slice(0, 8).toUpperCase();
+
+    setRoomId(id);
+    setMeetingLink(`${window.location.origin}/meet/${meetingName}?${id}`);
+  };
+
+  const copyLink = async () => {
+    if (!meetingLink) return;
+
+    await navigator.clipboard.writeText(meetingLink);
+    alert("Meeting Link Copied!");
+  };
+
+  const startMeeting = () => {
+    if (!roomId) return;
+
+    navigate(`/meet/${meetingName}?${roomId}`);
+  };
+
+  return (
+    <div className="min-h-screen bg-linear-to-br from-[#09090B] via-[#111827] to-[#1A1038] flex items-center justify-center px-5 selection:bg-purple-600 selection:text-white">
+      {/* Background Glow */}
+      <div className="absolute w-96 h-96 bg-purple-700/20 blur-[140px] rounded-full top-10 left-10"></div>
+
+      <div className="absolute w-96 h-96 bg-fuchsia-700/20 blur-[140px] rounded-full bottom-10 right-10"></div>
+
+      {/* Card */}
+
+      <div className="relative z-10 w-full max-w-3xl rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-10 shadow-[0_0_60px_rgba(124,58,237,.15)]">
+        {/* Header */}
+
+        <div className="flex flex-col items-center">
+          <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-700/40">
+            <Video size={36} className="text-white" />
+          </div>
+
+          <h1 className="mt-6 text-4xl font-bold text-white">
+            Create New Meeting
+          </h1>
+
+          <p className="mt-3 text-gray-400 text-center max-w-xl">
+            Generate a secure meeting room and invite your team with a single
+            click.
+          </p>
+        </div>
+
+        {/* Meeting Name */}
+
+        <div className="mt-10">
+          <label className="text-gray-300 font-medium">Meeting Name</label>
+
+          <input
+            type="text"
+            placeholder="Team Standup"
+            value={meetingName}
+            onChange={(e) => setMeetingName(e.target.value)}
+            className="mt-3 w-full rounded-xl bg-[#23212d] border border-purple-500/20 px-5 py-4 text-white outline-none focus:border-purple-500"
+          />
+        </div>
+
+        {/* Generate Button */}
+
+        <button
+          onClick={generateMeeting}
+          className="mt-8 w-full bg-purple-600 hover:bg-purple-700 transition rounded-xl py-4 font-semibold text-white flex items-center justify-center gap-3"
+        >
+          <Sparkles size={22} />
+          Generate Meeting
+        </button>
+
+        {/* Result */}
+
+        {roomId && (
+          <div className="mt-10 rounded-2xl border border-purple-500/20 bg-[#23212d] p-6">
+            <div className="flex items-center gap-3 text-green-400">
+              <CheckCircle2 size={24} />
+
+              <h2 className="text-xl font-semibold">
+                Meeting Created Successfully
+              </h2>
+            </div>
+
+            {/* Room ID */}
+
+            <div className="mt-6">
+              <p className="text-gray-400 mb-2">Room ID</p>
+
+              <div className="rounded-xl bg-[#15141c] border border-purple-500/20 px-5 py-4 text-white font-semibold tracking-wider">
+                {roomId}
+              </div>
+            </div>
+
+            {/* Meeting Link */}
+
+            <div className="mt-6">
+              <p className="text-gray-400 mb-2 flex items-center gap-2">
+                <Link2 size={18} />
+                Meeting Link
+              </p>
+
+              <div className="rounded-xl bg-[#15141c] border border-purple-500/20 px-5 py-4 break-all text-purple-300">
+                {meetingLink}
+              </div>
+            </div>
+
+            {/* Buttons */}
+
+            <div className="mt-8 flex gap-5">
+              <button
+                onClick={copyLink}
+                className="flex-1 py-4 rounded-xl border border-purple-500 text-white hover:bg-purple-600 transition flex items-center justify-center gap-2"
+              >
+                <Copy size={20} />
+                Copy Link
+              </button>
+
+              <button
+                onClick={startMeeting}
+                className="flex-1 py-4 rounded-xl bg-purple-600 hover:bg-purple-700 transition text-white flex items-center justify-center gap-2"
+              >
+                <Video size={20} />
+                Start Meeting
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

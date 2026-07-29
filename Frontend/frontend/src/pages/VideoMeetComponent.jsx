@@ -15,6 +15,8 @@ import {
   MessageCircle,
   Send,
   X,
+  User,
+  ArrowRight,
 } from "lucide-react";
 
 // import "../styles/videoComponent.css";
@@ -258,9 +260,9 @@ export default function VideoMeetComponent() {
 
   let addMsg = (data, sender, socketIdSender) => {
     setMessages((prevMsgs) => [...prevMsgs, { sender, data, socketIdSender }]);
-    // if (socketIdSender === socketIdRef.current) {
-    //   setMessages((prevMsgs) => prevMsgs + 1);
-    // }
+    if (showModel === false && socketIdSender !== socketIdRef.current) {
+      setNewMessages((prevMsgs) => prevMsgs + 1);
+    }
   };
 
   let connectToSocketServer = () => {
@@ -444,29 +446,100 @@ export default function VideoMeetComponent() {
     setMessage("");
   };
 
+  const handleBadge = () => {
+    setShowModel((prev) => !prev);
+    setNewMessages(0);
+  };
+
+  const chatBodyRef = useRef(null);
+
+  useEffect(() => {
+    chatBodyRef.current?.scrollTo({
+      top: chatBodyRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
+
   return (
     <div>
       {askForUsername === true ? (
-        <div>
-          <h1>Enter into Lobby</h1>
-          <br />
-          <TextField
-            id="outlined-basic"
-            label="Username"
-            variant="outlined"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-          />
-          <br />
-          <br />
-          <Button variant="contained" onClick={getMedia}>
-            Connect
-          </Button>
+        <div className="min-h-screen bg-linear-to-br from-[#09090B] via-[#111827] to-[#1A1038] flex items-center justify-center px-5 selection:bg-purple-600 selection:text-white">
+          {/* Background Glow */}
+          <div className="absolute w-96 h-96 bg-purple-700/20 blur-[140px] rounded-full top-0 left-0"></div>
+          <div className="absolute w-96 h-96 bg-fuchsia-700/20 blur-[140px] rounded-full bottom-0 right-0"></div>
 
-          <div>
-            <video ref={localVideoRef} autoPlay muted></video>
+          <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 gap-10 items-center">
+            {/* Left Side */}
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300">
+                <Video size={18} />
+                HaloMeet Lobby
+              </span>
+
+              <h1 className="mt-6 text-5xl font-bold text-white leading-tight">
+                Join Your
+                <span className="text-purple-500"> Meeting</span>
+              </h1>
+
+              <p className="mt-5 text-gray-400 text-lg leading-8">
+                Enter your username to join the meeting instantly. Connect with
+                your team through secure HD video, real-time chat and seamless
+                collaboration.
+              </p>
+            </div>
+
+            {/* Right Card */}
+
+            <div className="rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-8 shadow-[0_0_60px_rgba(124,58,237,.2)]">
+              <h2 className="text-3xl font-bold text-white">Enter Lobby</h2>
+
+              <p className="mt-2 text-gray-400">
+                Fill in your username to continue.
+              </p>
+
+              {/* Username */}
+
+              <div className="mt-8">
+                <label className="text-gray-300 mb-2 block">Username</label>
+
+                <div className="flex items-center rounded-xl bg-[#23212d] border border-purple-500/20 px-4">
+                  <User className="text-purple-400" size={20} />
+
+                  <input
+                    type="text"
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full bg-transparent px-4 py-4 text-white outline-none placeholder:text-gray-500"
+                  />
+                </div>
+              </div>
+
+              {/* Button */}
+
+              <button
+                onClick={getMedia}
+                className="mt-8 w-full rounded-xl bg-purple-600 hover:bg-purple-700 transition py-4 text-lg font-semibold text-white flex items-center justify-center gap-2"
+              >
+                Join Meeting
+                <ArrowRight size={20} />
+              </button>
+
+              {/* Preview */}
+
+              <div className="mt-8">
+                <p className="text-gray-400 mb-3">Camera Preview</p>
+
+                <div className="overflow-hidden rounded-2xl border border-purple-500/20 bg-black aspect-video">
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       ) : (
@@ -526,7 +599,7 @@ export default function VideoMeetComponent() {
           </Rnd>
 
           {showModel && (
-            <div className="fixed top-0 right-0 h-screen w-90 bg-[#16131f]/95 backdrop-blur-xl border-l border-purple-500/30 shadow-2xl z-50 flex flex-col">
+            <div className="fixed top-0 right-0 h-screen w-90 bg-[#16131f]/95 backdrop-blur-xl border-l border-purple-500/30 shadow-2xl z-50 flex  flex-col">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-purple-500/20">
                 <h2 className="text-xl font-semibold text-white">
@@ -542,7 +615,10 @@ export default function VideoMeetComponent() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div
+                className="flex-1 overflow-y-auto p-4 space-y-4 h-full flex-col"
+                ref={chatBodyRef}
+              >
                 {messages.map((msg, index) => (
                   <div
                     key={index}
@@ -637,7 +713,7 @@ export default function VideoMeetComponent() {
 
               {/* Chat */}
               <button
-                onClick={() => setShowModel((prev) => !prev)}
+                onClick={handleBadge}
                 className={`relative w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition flex items-center justify-center ${
                   showModel
                     ? "bg-green-600 hover:bg-green-700"
@@ -646,7 +722,7 @@ export default function VideoMeetComponent() {
               >
                 <MessageCircle size={24} />
 
-                {newMessages > 0 && (
+                {newMessages > 0 && showModel === false && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">
                     {newMessages}
                   </span>

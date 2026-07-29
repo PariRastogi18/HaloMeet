@@ -30,7 +30,10 @@ function LandingPage() {
 
         {/* Action Cards / Buttons */}
         <div className="grid sm:grid-cols-2 gap-4 w-full max-w-md mb-16">
-          <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-600/20 group">
+          <Link
+            to={"/createMeeting"}
+            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-600/20 group"
+          >
             <svg
               className="w-5 h-5 group-hover:scale-110 transition-transform"
               fill="none"
@@ -45,8 +48,11 @@ function LandingPage() {
               />
             </svg>
             New Meeting
-          </button>
-          <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-purple-600/50 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all">
+          </Link>
+          <Link
+            to={"/joinMeeting"}
+            className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-purple-600/50 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all"
+          >
             <svg
               className="w-5 h-5 text-purple-400"
               fill="none"
@@ -61,7 +67,7 @@ function LandingPage() {
               />
             </svg>
             Join Meeting
-          </button>
+          </Link>
         </div>
 
         {/* Mockup Showcase */}

@@ -10,6 +10,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import FeaturePage from "./pages/FeaturePage";
 import AboutPage from "./pages/AboutPage";
 import ForgotPassword from "./pages/ForgotPassword";
+import CreateMeetingPage from "./pages/CreateMeetingPage";
+import JoinMeetingPage from "./pages/JoinMeetingPage";
 
 function App() {
   return (
@@ -18,10 +20,26 @@ function App() {
       <Route path="/signIn" element={<SignInPage />} />
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/pricing" element={<Pricing />} />
-      <Route path="/notfound" element={<NotFoundPage />} />
+      <Route path="/*" element={<NotFoundPage />} />
       <Route path="/features" element={<FeaturePage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/forgotPassword" element={<ForgotPassword />} />
+      <Route
+        path="/createMeeting"
+        element={
+          <ProtectedRoute>
+            <CreateMeetingPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/joinMeeting"
+        element={
+          <ProtectedRoute>
+            <JoinMeetingPage />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/dashboard"
@@ -31,7 +49,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/:url" element={<VideoMeetComponent />} />
+      <Route
+        path="/meet/:url"
+        element={
+          <ProtectedRoute>
+            <VideoMeetComponent />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
