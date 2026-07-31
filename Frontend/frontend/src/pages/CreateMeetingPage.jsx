@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Video, Copy, Sparkles, CheckCircle2, Link2 } from "lucide-react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function CreateMeetingPage() {
   const navigate = useNavigate();
@@ -30,7 +32,8 @@ export default function CreateMeetingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#09090B] via-[#111827] to-[#1A1038] flex items-center justify-center px-5 selection:bg-purple-600 selection:text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#09090B] via-[#111827] to-[#1A1038]  selection:bg-purple-600 selection:text-white">
+      <Navbar />
       {/* Background Glow */}
       <div className="absolute w-96 h-96 bg-purple-700/20 blur-[140px] rounded-full top-10 left-10"></div>
 
@@ -38,7 +41,7 @@ export default function CreateMeetingPage() {
 
       {/* Card */}
 
-      <div className="relative z-10 w-full max-w-3xl rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-10 shadow-[0_0_60px_rgba(124,58,237,.15)]">
+      <div className="relative z-10 m-auto my-4 w-full max-w-3xl rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-10 shadow-[0_0_60px_rgba(124,58,237,.15)]">
         {/* Header */}
 
         <div className="flex flex-col items-center">
@@ -65,6 +68,7 @@ export default function CreateMeetingPage() {
             type="text"
             placeholder="Team Standup"
             value={meetingName}
+            required
             onChange={(e) => setMeetingName(e.target.value)}
             className="mt-3 w-full rounded-xl bg-[#23212d] border border-purple-500/20 px-5 py-4 text-white outline-none focus:border-purple-500"
           />
@@ -137,6 +141,7 @@ export default function CreateMeetingPage() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

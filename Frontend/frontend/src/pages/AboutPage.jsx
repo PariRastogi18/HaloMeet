@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -61,13 +62,19 @@ export default function AboutPage() {
         </p>
 
         <div className="mt-10 flex justify-center gap-5">
-          <button className="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-xl">
+          <Link
+            to={"/createMeeting"}
+            className="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-xl"
+          >
             Create Meeting
-          </button>
+          </Link>
 
-          <button className="border border-purple-500 px-8 py-3 rounded-xl hover:bg-purple-500/20">
+          <Link
+            to={"/joinMeeting"}
+            className="border border-purple-500 px-8 py-3 rounded-xl hover:bg-purple-500/20"
+          >
             Join Meeting
-          </button>
+          </Link>
         </div>
       </section>
 

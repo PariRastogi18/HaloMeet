@@ -62,8 +62,8 @@ export default function SignUp() {
         login(data.accessToken, data.user);
 
         setTimeout(() => {
-          navigate("/dashboard");
-        }, 1500);
+          navigate("/");
+        }, 1000);
       } else {
         setMessage({
           type: "error",

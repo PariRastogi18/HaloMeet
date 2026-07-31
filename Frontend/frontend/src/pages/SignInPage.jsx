@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Alert from "@mui/material/Alert";
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const [formData, setFromData] = useState({
     email: "",
@@ -53,8 +54,8 @@ export default function SignInPage() {
         login(data.accessToken, data.user);
 
         setTimeout(() => {
-          navigate("/dashboard");
-        }, 1500);
+          navigate("/");
+        }, 1000);
       } else {
         setMessage({
           type: "error",

@@ -1,6 +1,32 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { LogOut } from "lucide-react";
+
 export default function () {
+  const { isAuthenticated, loading, user, logout, accessToken } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const token = accessToken;
+      const BACKEND_LOGOUT_URL = "http://localhost:5000/api/auth/logout";
+
+      await fetch(BACKEND_LOGOUT_URL, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      logout();
+      navigate("/signIn");
+    }
+  };
+
   return (
     <nav className="border-b border-zinc-800 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
       <Link className="flex items-center gap-2" to={"/"}>
@@ -42,20 +68,31 @@ export default function () {
         </Link>
       </div>
 
-      <div className="flex items-center gap-4">
-        <Link
-          className="text-zinc-300 hover:text-white font-medium transition-colors px-4 py-2"
-          to={"/signIn"}
-        >
-          Sign In
-        </Link>
-        <Link
-          className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-5 py-2 rounded-lg transition-all shadow-md shadow-purple-600/20 active:scale-95"
-          to={"/signUp"}
-        >
-          Sign Up
-        </Link>
-      </div>
+      {!isAuthenticated ? (
+        <div className="flex items-center gap-4">
+          <Link
+            className="text-zinc-300 hover:text-white font-medium transition-colors px-4 py-2"
+            to={"/signIn"}
+          >
+            Sign In
+          </Link>
+          <Link
+            className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-5 py-2 rounded-lg transition-all shadow-md shadow-purple-600/20 active:scale-95"
+            to={"/signUp"}
+          >
+            Sign Up
+          </Link>
+        </div>
+      ) : (
+        <>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-xl transition-all"
+          >
+            <LogOut />
+          </button>
+        </>
+      )}
     </nav>
   );
 }

@@ -22,6 +22,8 @@ import {
 // import "../styles/videoComponent.css";
 // import Draggable from "react-draggable";
 import { Rnd } from "react-rnd";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const server_url = "http://localhost:5000";
 const connections = {};
@@ -463,12 +465,13 @@ export default function VideoMeetComponent() {
   return (
     <div>
       {askForUsername === true ? (
-        <div className="min-h-screen bg-linear-to-br from-[#09090B] via-[#111827] to-[#1A1038] flex items-center justify-center px-5 selection:bg-purple-600 selection:text-white">
+        <div className="min-h-screen bg-linear-to-br from-[#09090B] via-[#111827] to-[#1A1038]  selection:bg-purple-600 selection:text-white">
+          <Navbar />
           {/* Background Glow */}
           <div className="absolute w-96 h-96 bg-purple-700/20 blur-[140px] rounded-full top-0 left-0"></div>
           <div className="absolute w-96 h-96 bg-fuchsia-700/20 blur-[140px] rounded-full bottom-0 right-0"></div>
 
-          <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 gap-10 items-center">
+          <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 gap-10 items-center m-auto my-4 ">
             {/* Left Side */}
             <div>
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300">
@@ -509,6 +512,7 @@ export default function VideoMeetComponent() {
                     type="text"
                     placeholder="Enter your username"
                     value={username}
+                    required
                     onChange={(e) => setUsername(e.target.value)}
                     className="w-full bg-transparent px-4 py-4 text-white outline-none placeholder:text-gray-500"
                   />
@@ -541,6 +545,7 @@ export default function VideoMeetComponent() {
               </div>
             </div>
           </div>
+          <Footer />
         </div>
       ) : (
         <div className="relative min-h-screen bg-linear-to-br from-black via-gray-950 to-purple-950 text-white overflow-hidden">
@@ -654,6 +659,7 @@ export default function VideoMeetComponent() {
                     type="text"
                     placeholder="Type a message..."
                     value={message}
+                    required
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
