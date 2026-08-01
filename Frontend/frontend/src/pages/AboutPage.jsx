@@ -46,7 +46,7 @@ const features = [
 
 export default function AboutPage() {
   return (
-    <div className="bg-[#0B1120] text-white">
+    <div className="bg-[#0B1120] text-white selection:bg-purple-600 selection:text-white">
       <Navbar />
       {/* Hero */}
       <section className="py-24 text-center px-6">

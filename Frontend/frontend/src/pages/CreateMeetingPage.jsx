@@ -12,6 +12,10 @@ export default function CreateMeetingPage() {
   const [meetingLink, setMeetingLink] = useState("");
 
   const generateMeeting = () => {
+    if (meetingName.length === 0) {
+      alert("Before create meeting, require meeting name!");
+      return;
+    }
     const id = crypto.randomUUID().slice(0, 8).toUpperCase();
 
     setRoomId(id);
@@ -129,7 +133,6 @@ export default function CreateMeetingPage() {
                 <Copy size={20} />
                 Copy Link
               </button>
-
               <button
                 onClick={startMeeting}
                 className="flex-1 py-4 rounded-xl bg-purple-600 hover:bg-purple-700 transition text-white flex items-center justify-center gap-2"

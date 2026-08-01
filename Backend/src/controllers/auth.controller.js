@@ -6,6 +6,27 @@ import { loginSchema, signupSchema } from "../validators/auth.validate.js";
 import httpStatus from "http-status";
 import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
+import nodemailer from "nodemailer";
+
+const sendWelcomeEmail = async (receiverEmail, receiverName) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const message = {
+    from: process.env.EMAIL,
+    to: receiverEmail,
+    subject: "Welcome Email!",
+    text: `Welcome to HaloMeet, hope you doing well ${receiverName}.`,
+  };
+
+  const info = await transporter.sendMail(message);
+  console.log(info);
+};
 
 export async function signup(req, res) {
   const result = signupSchema.safeParse(req.body);
@@ -63,6 +84,12 @@ export async function signup(req, res) {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: "strict",
     });
+
+    try {
+      await sendWelcomeEmail(email, username);
+    } catch (error) {
+      console.log(`Email send error: ${error}`);
+    }
 
     return res.status(201).json({
       message: "User register successfully",
@@ -136,6 +163,12 @@ export async function login(req, res) {
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
+
+  try {
+    await sendWelcomeEmail(email, user.username);
+  } catch (error) {
+    console.log(`Email send error: ${error}`);
+  }
 
   res.status(httpStatus.OK).json({
     message: "User login successfully",
