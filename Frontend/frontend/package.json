@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.22.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@heroicons/react": "^2.2.0",

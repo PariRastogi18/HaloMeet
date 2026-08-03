@@ -8,15 +8,15 @@ import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
 import nodemailer from "nodemailer";
 
-const sendWelcomeEmail = async (receiverEmail, receiverName) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
+const sendWelcomeEmail = async (receiverEmail, receiverName) => {
   const message = {
     from: process.env.EMAIL,
     to: receiverEmail,
@@ -25,7 +25,6 @@ const sendWelcomeEmail = async (receiverEmail, receiverName) => {
   };
 
   const info = await transporter.sendMail(message);
-  console.log(info);
 };
 
 export async function signup(req, res) {
@@ -178,6 +177,99 @@ export async function login(req, res) {
     },
     accessToken,
   });
+}
+
+const generateOtp = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+export async function sendOtp(req, res) {
+  try {
+    const { email } = req.body;
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        message: "User is not authorized",
+      });
+    }
+
+    const otp = generateOtp();
+    user.resetOtp = otp;
+    user.otpExpiry = Date.now() + 5 * 60 * 1000;
+    await user.save();
+
+    const message = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "OTP for reset password",
+      text: `Your OTP for reset password is ${otp}.`,
+    };
+
+    await transporter.sendMail(message);
+
+    res.status(httpStatus.OK).json({
+      message: "OTP send successfully",
+    });
+  } catch (error) {
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+export async function verifyOtp(req, res) {
+  try {
+    const { email, otp } = req.body;
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        message: "User is not authorized",
+      });
+    }
+
+    if (!user || user.resetOtp !== otp) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+    if (user.otpExpiry < Date.now()) {
+      return res.status(400).json({
+        message: "OTP Expired",
+      });
+    }
+
+    user.resetOtp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+
+    res.status(200).json({
+      message: "OTP verified successfully",
+    });
+  } catch (error) {
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+export async function resetPassword(req, res) {
+  try {
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        message: "User is not authorized",
+      });
+    }
+    const hashPassword = bcrypt.hashSync(password, 10);
+    user.password = hashPassword;
+    await user.save();
+    res.status(200).json({
+      message: "change password successfully",
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function getMe(req, res) {

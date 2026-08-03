@@ -369,6 +369,10 @@ export default function VideoMeetComponent() {
   };
 
   let getMedia = () => {
+    if (username.length === 0) {
+      alert("Username Required!");
+      return;
+    }
     setVideo(videoAvailable);
     setAudio(audioAvailable);
     setAskForUsername(false);

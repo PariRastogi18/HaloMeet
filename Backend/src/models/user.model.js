@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is required"],
   },
+  resetOtp: String,
+  otpExpiry: Date,
 });
 
 const userModel = new mongoose.model("user", userSchema);

@@ -6,6 +6,9 @@ import {
   getMe,
   logout,
   logoutAll,
+  sendOtp,
+  verifyOtp,
+  resetPassword,
 } from "../controllers/auth.controller.js";
 import { authorization } from "../middlewares/auth.middleware.js";
 import { verifyRefreshTokenMiddleware } from "../middlewares/verifyRefreshTokenMiddleware.js";
@@ -30,5 +33,8 @@ router.get("/get-me", authorization, getMe);
 router.get("/refreshToken", verifyRefreshTokenMiddleware, refreshToken);
 router.route("/add_to_activity");
 router.route("/get_all_activity");
+router.post("/sendOtp", sendOtp);
+router.post("/verifyOtp", verifyOtp);
+router.post("/resetPassword", resetPassword);
 
 export default router;

@@ -30,7 +30,7 @@ export default function CreateMeetingPage() {
   };
 
   const startMeeting = () => {
-    if (!roomId) return;
+    if (meetingName.length === 0 || !roomId) return;
 
     navigate(`/meet/${meetingName}?${roomId}`);
   };

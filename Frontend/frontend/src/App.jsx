@@ -12,6 +12,8 @@ import AboutPage from "./pages/AboutPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import CreateMeetingPage from "./pages/CreateMeetingPage";
 import JoinMeetingPage from "./pages/JoinMeetingPage";
+import VerifyOtp from "./pages/VerifyOtp";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
       <Route path="/features" element={<FeaturePage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/forgotPassword" element={<ForgotPassword />} />
+      <Route path="/verifyOtp" element={<VerifyOtp />} />
+      <Route path="/changePassword" element={<ChangePassword />} />
       <Route
         path="/createMeeting"
         element={
