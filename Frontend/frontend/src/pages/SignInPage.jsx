@@ -23,6 +23,10 @@ export default function SignInPage() {
     });
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5000/api/auth/google";
+  };
+
   let handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -190,7 +194,11 @@ export default function SignInPage() {
         </div>
 
         {/* Google OAuth Button */}
-        <button className="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium py-3 rounded-xl flex items-center justify-center gap-3 transition-all text-sm">
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium py-3 rounded-xl flex items-center justify-center gap-3 transition-all text-sm"
+        >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               fill="currentColor"

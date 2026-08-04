@@ -7,7 +7,9 @@ import cors from "cors";
 import { connectToSocket } from "./controllers/socketManager.js";
 import { connectDB } from "./config/database.js";
 import cookieParser from "cookie-parser";
+import passport from "passport";
 import authRouter from "./routes/auth.routes.js";
+import "./config/passport.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -25,6 +27,7 @@ app.use(
 app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ limit: "40kb", extended: "true" }));
 app.use(cookieParser());
+app.use(passport.initialize());
 app.use("/api/auth", authRouter);
 
 connectDB();

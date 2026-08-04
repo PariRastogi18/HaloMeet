@@ -17,6 +17,10 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5000/api/auth/google";
+  };
+
   const handleInputChange = (event) => {
     setFormData((currData) => {
       return { ...currData, [event.target.name]: event.target.value };
@@ -214,7 +218,10 @@ export default function SignUp() {
         </div>
 
         {/* Google Register */}
-        <button className="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium py-2.5 rounded-xl flex items-center justify-center gap-3 transition-all text-sm">
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium py-2.5 rounded-xl flex items-center justify-center gap-3 transition-all text-sm"
+        >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -237,7 +244,7 @@ export default function SignUp() {
               fill="#EA4335"
             />
           </svg>
-          Sign up with Google
+          Continue with Google
         </button>
 
         {/* Footer Link */}

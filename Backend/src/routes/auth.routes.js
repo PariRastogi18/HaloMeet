@@ -13,6 +13,8 @@ import {
 import { authorization } from "../middlewares/auth.middleware.js";
 import { verifyRefreshTokenMiddleware } from "../middlewares/verifyRefreshTokenMiddleware.js";
 import userModel from "../models/user.model.js";
+import passport from "passport";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 
@@ -27,6 +29,28 @@ router.get("/verify", verifyRefreshTokenMiddleware, async (req, res) => {
     },
   });
 });
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] }),
+);
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    try {
+      const token = jwt.sign(
+        { id: req.user._id, email: req.user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" },
+      );
+
+      res.redirect(`${process.env.CLIENT_URL}/auth-success?token=${token}`);
+    } catch (error) {
+      console.error("Google login error", error);
+      res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+    }
+  },
+);
 router.get("/logout", verifyRefreshTokenMiddleware, logout);
 router.get("/logoutAll", verifyRefreshTokenMiddleware, logoutAll);
 router.get("/get-me", authorization, getMe);

@@ -14,12 +14,14 @@ import CreateMeetingPage from "./pages/CreateMeetingPage";
 import JoinMeetingPage from "./pages/JoinMeetingPage";
 import VerifyOtp from "./pages/VerifyOtp";
 import ChangePassword from "./pages/ChangePassword";
+import AuthSuccessPage from "./pages/AuthSuccessPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/signIn" element={<SignInPage />} />
+      <Route path="/auth-success" element={<AuthSuccessPage />} />
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/*" element={<NotFoundPage />} />

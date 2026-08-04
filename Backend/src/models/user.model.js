@@ -11,7 +11,12 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
+  },
+  googleId: {
+    type: String,
+  },
+  avatar: {
+    type: String,
   },
   resetOtp: String,
   otpExpiry: Date,
