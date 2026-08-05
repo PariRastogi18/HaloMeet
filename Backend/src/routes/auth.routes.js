@@ -55,8 +55,6 @@ router.get("/logout", verifyRefreshTokenMiddleware, logout);
 router.get("/logoutAll", verifyRefreshTokenMiddleware, logoutAll);
 router.get("/get-me", authorization, getMe);
 router.get("/refreshToken", verifyRefreshTokenMiddleware, refreshToken);
-router.route("/add_to_activity");
-router.route("/get_all_activity");
 router.post("/sendOtp", sendOtp);
 router.post("/verifyOtp", verifyOtp);
 router.post("/resetPassword", resetPassword);
