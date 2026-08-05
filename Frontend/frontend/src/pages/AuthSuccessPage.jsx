@@ -1,24 +1,12 @@
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthSuccessPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { login } = useAuth();
 
   useEffect(() => {
-    const token = searchParams.get("token");
-
-    if (!token) {
-      navigate("/signIn", { replace: true });
-      return;
-    }
-
-    const user = { token };
-    login(token, user);
     navigate("/", { replace: true });
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">

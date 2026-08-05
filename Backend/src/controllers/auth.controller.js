@@ -140,7 +140,7 @@ export async function login(req, res) {
     .update(refreshToken)
     .digest("hex");
 
-  const session = sessionModel.create({
+  const session = await sessionModel.create({
     user: user._id,
     refreshTokenHash: refreshTokenHash,
     ip: req.ip,
@@ -351,26 +351,23 @@ export async function refreshToken(req, res) {
 
 export async function logout(req, res) {
   const refreshToken = req.refreshToken;
-  if (!refreshToken) {
-    return res.status(httpStatus.UNAUTHORIZED).json({
-      message: "Refresh token not found",
+
+  if (refreshToken) {
+    const refreshTokenHash = crypto
+      .createHash("sha256")
+      .update(refreshToken)
+      .digest("hex");
+
+    const session = await sessionModel.findOne({
+      refreshTokenHash,
+      revoke: false,
     });
+
+    if (session) {
+      session.revoke = true;
+      await session.save();
+    }
   }
-  const refreshTokenHash = crypto
-    .createHash("sha256")
-    .update(refreshToken)
-    .digest("hex");
-  const session = await sessionModel.findOne({
-    refreshTokenHash,
-    revoke: false,
-  });
-  if (!session) {
-    return res.status(httpStatus.UNAUTHORIZED).json({
-      message: "Invalid refresh token",
-    });
-  }
-  session.revoke = true;
-  await session.save();
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
@@ -378,7 +375,7 @@ export async function logout(req, res) {
     sameSite: "strict",
   });
 
-  res.status(httpStatus.OK).json({
+  return res.status(httpStatus.OK).json({
     message: "Logged out successfully",
   });
 }

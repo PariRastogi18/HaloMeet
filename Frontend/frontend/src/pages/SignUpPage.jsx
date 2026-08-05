@@ -89,10 +89,10 @@ export default function SignUp() {
       {/* Navbar */}
       <Navbar />
       {/* Decorative Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-125 sm:h-125 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Container */}
-      <div className="w-full max-w-md bg-zinc-950/60 backdrop-blur-xl border border-zinc-800/80 rounded-2xl p-8 shadow-2xl relative z-10 my-8 mx-auto">
+      <div className="w-full max-w-md bg-zinc-950/60 backdrop-blur-xl border border-zinc-800/80 rounded-2xl p-5 sm:p-8 shadow-2xl relative z-10 my-8 mx-auto">
         {/* Logo and Header */}
         <div className="text-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-600/20 mx-auto mb-4">

@@ -15,6 +15,8 @@ import { verifyRefreshTokenMiddleware } from "../middlewares/verifyRefreshTokenM
 import userModel from "../models/user.model.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import sessionModel from "../models/session.model.js";
 
 const router = Router();
 
@@ -22,6 +24,9 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.get("/verify", verifyRefreshTokenMiddleware, async (req, res) => {
   const user = await userModel.findById(req.user.id).select("username");
+  if (!user) {
+    return res.status(401).json({ message: "User not found or token invalid" });
+  }
   res.status(200).json({
     user: {
       id: user._id,
@@ -36,18 +41,39 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
-  (req, res) => {
+  async (req, res) => {
     try {
-      const token = jwt.sign(
+      const refreshToken = jwt.sign(
         { id: req.user._id, email: req.user.email },
         process.env.JWT_SECRET,
         { expiresIn: "7d" },
       );
 
-      res.redirect(`${process.env.CLIENT_URL}/auth-success?token=${token}`);
+      const refreshTokenHash = crypto
+        .createHash("sha256")
+        .update(refreshToken)
+        .digest("hex");
+
+      await sessionModel.create({
+        user: req.user._id,
+        refreshTokenHash,
+        ip: req.ip,
+        userAgent: req.headers["user-agent"],
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      return res.redirect(`${clientUrl}/auth-success`);
     } catch (error) {
       console.error("Google login error", error);
-      res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      return res.redirect(`${clientUrl}/signIn?error=google_failed`);
     }
   },
 );

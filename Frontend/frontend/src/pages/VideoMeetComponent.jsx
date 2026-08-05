@@ -475,20 +475,20 @@ export default function VideoMeetComponent() {
           <div className="absolute w-96 h-96 bg-purple-700/20 blur-[140px] rounded-full top-0 left-0"></div>
           <div className="absolute w-96 h-96 bg-fuchsia-700/20 blur-[140px] rounded-full bottom-0 right-0"></div>
 
-          <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 gap-10 items-center m-auto my-4 ">
+          <div className="relative z-10 w-full max-w-5xl grid grid-cols-1 gap-8 px-4 py-4 sm:px-6 lg:grid-cols-2 lg:gap-10 lg:items-center lg:my-4">
             {/* Left Side */}
-            <div>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300">
+            <div className="text-center lg:text-left">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm">
                 <Video size={18} />
                 HaloMeet Lobby
               </span>
 
-              <h1 className="mt-6 text-5xl font-bold text-white leading-tight">
+              <h1 className="mt-6 text-4xl font-bold text-white leading-tight sm:text-5xl">
                 Join Your
                 <span className="text-purple-500"> Meeting</span>
               </h1>
 
-              <p className="mt-5 text-gray-400 text-lg leading-8">
+              <p className="mt-5 text-gray-400 text-base leading-7 sm:text-lg sm:leading-8">
                 Enter your username to join the meeting instantly. Connect with
                 your team through secure HD video, real-time chat and seamless
                 collaboration.
@@ -497,7 +497,7 @@ export default function VideoMeetComponent() {
 
             {/* Right Card */}
 
-            <div className="rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-8 shadow-[0_0_60px_rgba(124,58,237,.2)]">
+            <div className="rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-5 shadow-[0_0_60px_rgba(124,58,237,.2)] sm:p-8">
               <h2 className="text-3xl font-bold text-white">Enter Lobby</h2>
 
               <p className="mt-2 text-gray-400">
@@ -554,12 +554,12 @@ export default function VideoMeetComponent() {
       ) : (
         <div className="relative min-h-screen bg-linear-to-br from-black via-gray-950 to-purple-950 text-white overflow-hidden">
           {/* Videos Grid */}
-          <div className="flex flex-wrap justify-start gap-6 p-8">
+          <div className="grid w-full grid-cols-1 gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
             {/* Remote Users */}
             {videos?.map((video) => (
               <div
                 key={video.socketId}
-                className="relative w-[320px] h-55 rounded-2xl overflow-hidden
+                className="relative aspect-video w-full overflow-hidden rounded-2xl
                   bg-black/50 border border-purple-500/40
                   shadow-[0_0_30px_rgba(168,85,247,0.25)]
                   backdrop-blur-md"
@@ -608,7 +608,7 @@ export default function VideoMeetComponent() {
           </Rnd>
 
           {showModel && (
-            <div className="fixed top-0 right-0 h-screen w-90 bg-[#16131f]/95 backdrop-blur-xl border-l border-purple-500/30 shadow-2xl z-50 flex  flex-col">
+            <div className="fixed top-0 right-0 h-screen w-full max-w-90 bg-[#16131f]/95 backdrop-blur-xl border-l border-purple-500/30 shadow-2xl z-50 flex flex-col">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-purple-500/20">
                 <h2 className="text-xl font-semibold text-white">

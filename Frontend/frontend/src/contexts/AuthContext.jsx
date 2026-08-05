@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 const AuthContext = createContext();
 
@@ -12,7 +18,7 @@ export function AuthProvider({ children }) {
     checkAuthStatus();
   }, []);
 
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -39,19 +45,19 @@ export function AuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  });
 
-  const login = (token, userData) => {
+  const login = useCallback((token, userData) => {
     setAccessToken(token);
     setUser(userData);
     setIsAuthenticated(true);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setAccessToken(null);
     setUser(null);
     setIsAuthenticated(false);
-  };
+  }, []);
 
   return (
     <AuthContext.Provider

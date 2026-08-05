@@ -9,28 +9,28 @@ function LandingPage() {
     <div className="min-h-screen bg-black dark:bg-gray-900 text-white font-sans selection:bg-purple-600 selection:text-white">
       <Navbar />
       {/* Hero Section */}
-      <header className="relative px-6 pt-11 pb-16 max-w-6xl mx-auto text-center flex flex-col items-center justify-center overflow-hidden">
+      <header className="relative px-4 pt-10 pb-14 sm:px-6 md:pt-11 md:pb-16 max-w-6xl mx-auto text-center flex flex-col items-center justify-center overflow-hidden">
         {/* Decorative Background Glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
 
-        <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-purple-950/50 text-purple-400 border border-purple-800/50 mb-6 uppercase tracking-widest">
+        <span className="px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-semibold bg-purple-950/50 text-purple-400 border border-purple-800/50 mb-6 uppercase tracking-widest">
           Next-Gen Video Conferencing
         </span>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight max-w-3xl leading-tight mb-6">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight max-w-3xl leading-tight mb-6 px-2">
           Connect Anyone, Anywhere with{" "}
           <span className="bg-linear-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
             Flawless Video
           </span>
         </h1>
 
-        <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
+        <p className="text-zinc-400 text-base sm:text-lg md:text-xl max-w-2xl mb-10 leading-relaxed px-2">
           A premium HaloMeet built for crystal-clear video calls, instant screen
           sharing, and secure real-time collaboration.
         </p>
 
         {/* Action Cards / Buttons */}
-        <div className="grid sm:grid-cols-2 gap-4 w-full max-w-md mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md mb-16 px-2 sm:px-0">
           <Link
             to={"/createMeeting"}
             className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-600/20 group"
@@ -85,20 +85,20 @@ function LandingPage() {
       {/* Features Section */}
       <section
         id="features"
-        className="px-6 py-20 bg-zinc-950 border-t border-zinc-900"
+        className="px-4 py-16 sm:px-6 sm:py-20 bg-zinc-950 border-t border-zinc-900"
       >
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 px-2">
               Everything you need for seamless meetings
             </h2>
-            <p className="text-zinc-400 max-w-xl mx-auto">
+            <p className="text-zinc-400 max-w-xl mx-auto px-2 text-sm sm:text-base">
               High-performance tools integrated directly into your browser with
               zero installs required.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Feature 1 */}
             <div className="p-6 rounded-xl border border-zinc-800 bg-black hover:border-purple-600/50 transition-colors">
               <div className="w-12 h-12 rounded-lg bg-purple-950/50 border border-purple-800 text-purple-400 flex items-center justify-center mb-4">
