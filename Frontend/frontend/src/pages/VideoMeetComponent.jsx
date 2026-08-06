@@ -32,6 +32,14 @@ const peerConfigConnections = {
   iceServers: [{ urls: "stun:stun1.l.google.com:19302" }],
 };
 export default function VideoMeetComponent() {
+  const [rndConfig, setRndConfig] = useState({
+    x: 20,
+    y: 20,
+    width: 160,
+    height: 100,
+  });
+
+
   const socketRef = useRef();
   const socketIdRef = useRef();
   const localVideoRef = useRef(null);
@@ -104,6 +112,18 @@ export default function VideoMeetComponent() {
 
   useEffect(() => {
     getPermissions();
+    const updateConfig = () => {
+      const isMobile = window.innerWidth < 640;
+      setRndConfig({
+        x: window.innerWidth - (isMobile ? 140 : 320),
+        y: 20,
+        width: isMobile ? 120 : 300,
+        height: isMobile ? 80 : 180,
+      });
+    };
+    updateConfig();
+    window.addEventListener("resize", updateConfig);
+    return () => window.removeEventListener("resize", updateConfig);
   }, []);
 
   let getUserMediaSuccess = (stream) => {
@@ -497,7 +517,7 @@ export default function VideoMeetComponent() {
 
             {/* Right Card */}
 
-            <div className="rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-5 shadow-[0_0_60px_rgba(124,58,237,.2)] sm:p-8">
+            <div className="rounded-2xl sm:rounded-3xl border border-purple-500/20 bg-[#16131F]/90 backdrop-blur-xl p-4 sm:p-8 shadow-[0_0_60px_rgba(124,58,237,.2)]">
               <h2 className="text-3xl font-bold text-white">Enter Lobby</h2>
 
               <p className="mt-2 text-gray-400">
@@ -554,7 +574,7 @@ export default function VideoMeetComponent() {
       ) : (
         <div className="relative min-h-screen bg-linear-to-br from-black via-gray-950 to-purple-950 text-white overflow-hidden">
           {/* Videos Grid */}
-          <div className="grid w-full grid-cols-1 gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid w-full grid-cols-1 gap-3 sm:gap-4 p-3 sm:p-6 md:grid-cols-2 2xl:grid-cols-3">
             {/* Remote Users */}
             {videos?.map((video) => (
               <div
@@ -584,17 +604,12 @@ export default function VideoMeetComponent() {
 
           {/* Local Video (Top Right) - Draggable */}
           <Rnd
-            default={{
-              x: window.innerWidth - 340,
-              y: 20,
-              width: 300,
-              height: 180,
-            }}
+            default={rndConfig}
             bounds="window"
-            minWidth={220}
-            minHeight={140}
+            minWidth={100}
+            minHeight={70}
             style={{ zIndex: 50 }}
-            className="rounded-2xl overflow-hidden border-2 border-purple-500 bg-black shadow-[0_0_35px_rgba(168,85,247,0.5)] cursor-move"
+            className="rounded-xl sm:rounded-2xl overflow-hidden border-2 border-purple-500 bg-black shadow-[0_0_35px_rgba(168,85,247,0.5)] cursor-move"
           >
             <video
               ref={localVideoRef}
@@ -602,13 +617,13 @@ export default function VideoMeetComponent() {
               muted
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-2 left-2 px-3 py-1 rounded-full bg-purple-600 text-sm text-white">
+            <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-purple-600 text-xs sm:text-sm text-white">
               You
             </div>
           </Rnd>
 
           {showModel && (
-            <div className="fixed top-0 right-0 h-screen w-full max-w-90 bg-[#16131f]/95 backdrop-blur-xl border-l border-purple-500/30 shadow-2xl z-50 flex flex-col">
+            <div className="fixed top-0 right-0 h-screen w-full sm:max-w-90 bg-[#16131f]/95 backdrop-blur-xl border-l border-purple-500/30 shadow-2xl z-50 flex flex-col">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-purple-500/20">
                 <h2 className="text-xl font-semibold text-white">
@@ -685,52 +700,60 @@ export default function VideoMeetComponent() {
           )}
 
           {/* Bottom Controls */}
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
-            <div className="flex items-center gap-5 bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-full px-8 py-4 shadow-2xl">
+          <div className="fixed bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 w-full px-4 sm:w-auto sm:px-0">
+            <div className="flex items-center justify-center gap-2 sm:gap-5 bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-full px-3 sm:px-8 py-2 sm:py-4 shadow-2xl overflow-x-auto max-w-full">
               {/* Mic */}
               <button
                 onClick={toggleMic}
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition
-      ${
-        audio
-          ? "bg-gray-800 hover:bg-purple-700"
-          : "bg-red-600 hover:bg-red-700"
-      }`}
+                className={`w-11 h-11 sm:w-14 sm:h-14 shrink-0 rounded-full flex items-center justify-center transition
+        ${
+          audio
+            ? "bg-gray-800 hover:bg-purple-700"
+            : "bg-red-600 hover:bg-red-700"
+        }`}
               >
-                {audio ? <Mic size={24} /> : <MicOff size={24} />}
+                {audio ? (
+                  <Mic size={20} className="sm:w-6 sm:h-6" />
+                ) : (
+                  <MicOff size={20} className="sm:w-6 sm:h-6" />
+                )}
               </button>
 
               {/* Camera */}
               <button
                 onClick={toggleVideo}
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition
-      ${
-        video
-          ? "bg-gray-800 hover:bg-purple-700"
-          : "bg-red-600 hover:bg-red-700"
-      }`}
+                className={`w-11 h-11 sm:w-14 sm:h-14 shrink-0 rounded-full flex items-center justify-center transition
+        ${
+          video
+            ? "bg-gray-800 hover:bg-purple-700"
+            : "bg-red-600 hover:bg-red-700"
+        }`}
               >
-                {video ? <Video size={24} /> : <VideoOff size={24} />}
+                {video ? (
+                  <Video size={20} className="sm:w-6 sm:h-6" />
+                ) : (
+                  <VideoOff size={20} className="sm:w-6 sm:h-6" />
+                )}
               </button>
 
               {/* Leave */}
               <button
                 onClick={leaveCall}
-                className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-lg transition"
+                className="w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-lg transition"
               >
-                <PhoneOff size={28} />
+                <PhoneOff size={22} className="sm:w-7 sm:h-7" />
               </button>
 
               {/* Chat */}
               <button
                 onClick={handleBadge}
-                className={`relative w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 transition flex items-center justify-center ${
+                className={`relative w-11 h-11 sm:w-14 sm:h-14 shrink-0 rounded-full transition flex items-center justify-center ${
                   showModel
                     ? "bg-green-600 hover:bg-green-700"
                     : "bg-gray-800 hover:bg-purple-700"
                 }`}
               >
-                <MessageCircle size={24} />
+                <MessageCircle size={20} className="sm:w-6 sm:h-6" />
 
                 {newMessages > 0 && showModel === false && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">
@@ -740,21 +763,25 @@ export default function VideoMeetComponent() {
               </button>
 
               {/* Settings */}
-              {/* <button className="w-14 h-14 rounded-full bg-gray-800 hover:bg-purple-700 flex items-center justify-center transition">
-                <Settings size={24} />
-              </button> */}
+              {/* <button className="w-11 h-11 sm:w-14 sm:h-14 shrink-0 rounded-full bg-gray-800 hover:bg-purple-700 flex items-center justify-center transition">
+      <Settings size={20} className="sm:w-6 sm:h-6" />
+    </button> */}
 
-              {/* {Screen Sharing button} */}
+              {/* Screen Sharing button */}
               <button
                 onClick={toggleScreenShare}
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition
-  ${
-    screen
-      ? "bg-green-600 hover:bg-green-700"
-      : "bg-gray-800 hover:bg-purple-700"
-  }`}
+                className={`w-11 h-11 sm:w-14 sm:h-14 shrink-0 rounded-full flex items-center justify-center transition
+        ${
+          screen
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-gray-800 hover:bg-purple-700"
+        }`}
               >
-                {screen ? <MonitorOff size={24} /> : <MonitorUp size={24} />}
+                {screen ? (
+                  <MonitorOff size={20} className="sm:w-6 sm:h-6" />
+                ) : (
+                  <MonitorUp size={20} className="sm:w-6 sm:h-6" />
+                )}
               </button>
             </div>
           </div>

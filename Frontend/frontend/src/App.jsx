@@ -15,19 +15,30 @@ import JoinMeetingPage from "./pages/JoinMeetingPage";
 import VerifyOtp from "./pages/VerifyOtp";
 import ChangePassword from "./pages/ChangePassword";
 import AuthSuccessPage from "./pages/AuthSuccessPage";
+import { useAuth } from "./contexts/AuthContext";
 
 function App() {
+  const { isAuthenticated } = useAuth();
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/signIn" element={<SignInPage />} />
+      <Route
+        path="/signIn"
+        element={isAuthenticated ? <LandingPage /> : <SignInPage />}
+      />
+      <Route
+        path="/signUp"
+        element={isAuthenticated ? <LandingPage /> : <SignUp />}
+      />
       <Route path="/auth-success" element={<AuthSuccessPage />} />
-      <Route path="/signUp" element={<SignUp />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/*" element={<NotFoundPage />} />
       <Route path="/features" element={<FeaturePage />} />
       <Route path="/about" element={<AboutPage />} />
-      <Route path="/forgotPassword" element={<ForgotPassword />} />
+      <Route
+        path="/forgotPassword"
+        element={isAuthenticated ? <LandingPage /> : <ForgotPassword />}
+      />
       <Route path="/verifyOtp" element={<VerifyOtp />} />
       <Route path="/changePassword" element={<ChangePassword />} />
       <Route
