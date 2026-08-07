@@ -15,8 +15,8 @@ const app = express();
 const server = http.createServer(app);
 const io = connectToSocket(server);
 
+app.set("trust proxy", 1);
 app.set("port", process.env.PORT || 5000);
-
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -24,6 +24,7 @@ app.use(
     credentials: true,
   }),
 );
+
 app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ limit: "40kb", extended: "true" }));
 app.use(cookieParser());
