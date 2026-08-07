@@ -6,14 +6,6 @@ import { Link } from "react-router-dom";
 export default function NotFoundPage() {
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full">
-        <body class="h-full">
-        ```
-      */}
       <main className=" min-h-screen  bg-black dark:bg-gray-900 selection:bg-purple-600 selection:text-white">
         <Navbar />
         <div className="text-center my-20 ">
