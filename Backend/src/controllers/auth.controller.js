@@ -371,7 +371,7 @@ export async function logout(req, res) {
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "strict",
   });
 
