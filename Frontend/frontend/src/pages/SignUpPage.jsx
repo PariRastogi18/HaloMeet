@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function SignUp() {
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ export default function SignUp() {
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${API}/api/auth/google`;
   };
 
   const handleInputChange = (event) => {
@@ -39,7 +40,8 @@ export default function SignUp() {
     }
 
     try {
-      const BACKEND_URL = "http://localhost:5000/api/auth/signup";
+      
+      const BACKEND_URL = `${API}/api/auth/signup`;
 
       const response = await fetch(BACKEND_URL, {
         method: "POST",

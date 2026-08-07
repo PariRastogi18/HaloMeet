@@ -3,6 +3,7 @@ import { LockKeyhole, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 
 export default function ResetPassword() {
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,7 +33,7 @@ export default function ResetPassword() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/resetPassword",
+        `${API}/api/auth/resetPassword`,
         {
           method: "POST",
           headers: {

@@ -3,13 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, ArrowLeft, LockKeyhole } from "lucide-react";
 
 export default function ForgotPassword() {
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const BACKEND_URL = "http://localhost:5000/api/auth/sendOtp";
+      const BACKEND_URL = `${API}/api/auth/sendOtp`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {

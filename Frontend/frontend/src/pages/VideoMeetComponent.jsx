@@ -25,7 +25,9 @@ import { Rnd } from "react-rnd";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const server_url = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL;
+
+const server_url = `${API}`;
 const connections = {};
 
 const peerConfigConnections = {

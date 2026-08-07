@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { LogOut, Menu, X } from "lucide-react";
 
 export default function Navbar() {
+  const API = import.meta.env.VITE_API_URL;
   const { isAuthenticated, loading, user, logout, accessToken } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       const token = accessToken;
-      const BACKEND_LOGOUT_URL = "http://localhost:5000/api/auth/logout";
+      const BACKEND_LOGOUT_URL = `${API}/api/auth/logout`;
 
       await fetch(BACKEND_LOGOUT_URL, {
         method: "GET",

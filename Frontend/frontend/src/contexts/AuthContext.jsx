@@ -9,6 +9,7 @@ import React, {
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  const API = import.meta.env.VITE_API_URL;
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,7 +23,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/verify", {
+      const response = await fetch(`${API}/api/auth/verify`, {
         method: "GET",
         credentials: "include",
       });

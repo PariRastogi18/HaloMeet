@@ -40,9 +40,10 @@ export default function VerifyOtp() {
     }
 
     console.log("OTP:", typeof enteredOtp);
+    const API = import.meta.env.VITE_API_URL;
 
     try {
-      const BACKEND_URL = "http://localhost:5000/api/auth/verifyOtp";
+      const BACKEND_URL = `${API}/api/auth/verifyOtp`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {

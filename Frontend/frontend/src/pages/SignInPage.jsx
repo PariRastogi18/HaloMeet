@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import Alert from "@mui/material/Alert";
 
 export default function SignInPage() {
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { login, user } = useAuth();
 
@@ -24,7 +25,7 @@ export default function SignInPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${API}/api/auth/google`;
   };
 
   let handleSubmit = async (e) => {
@@ -33,7 +34,7 @@ export default function SignInPage() {
     setMessage({ type: "", text: "" });
 
     try {
-      const BACKEND_URL = "http://localhost:5000/api/auth/login";
+      const BACKEND_URL = `${API}/api/auth/login`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {

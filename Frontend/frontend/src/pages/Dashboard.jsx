@@ -4,13 +4,14 @@ import { useAuth } from "../contexts/AuthContext";
 import LandingPage from "./LandingPage";
 
 function Dashboard() {
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { user, logout, accessToken } = useAuth();
 
   const handleLogout = async () => {
     try {
       const token = accessToken;
-      const BACKEND_LOGOUT_URL = "http://localhost:5000/api/auth/logout";
+      const BACKEND_LOGOUT_URL = `${API}/api/auth/logout`;
 
       await fetch(BACKEND_LOGOUT_URL, {
         method: "GET",
