@@ -124,19 +124,6 @@ VITE_API_URL=http://localhost:5000
 
 ---
 
-## 📸 Screenshots
-
-> Add screenshots of your application here.
-
-- Home Page
-- Sign In
-- Dashboard
-- Video Meeting
-- Chat
-- Screen Sharing
-
----
-
 ## 🔒 Authentication Flow
 
 - User Registration
