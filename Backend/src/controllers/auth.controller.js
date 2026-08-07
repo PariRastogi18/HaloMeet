@@ -372,7 +372,7 @@ export async function logout(req, res) {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "none",
   });
 
   return res.status(httpStatus.OK).json({
