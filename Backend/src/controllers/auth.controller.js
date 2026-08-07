@@ -394,8 +394,8 @@ export async function logoutAll(req, res) {
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: false,
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
   });
 
   res.status(httpStatus.OK).json({
