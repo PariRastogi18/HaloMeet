@@ -68,11 +68,11 @@ router.get(
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      const clientUrl = process.env.CLIENT_URL;
       return res.redirect(`${clientUrl}/auth-success`);
     } catch (error) {
       console.error("Google login error", error);
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      const clientUrl = process.env.CLIENT_URL;
       return res.redirect(`${clientUrl}/signIn?error=google_failed`);
     }
   },

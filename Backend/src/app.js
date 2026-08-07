@@ -19,7 +19,7 @@ app.set("port", process.env.PORT || 5000);
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   }),
