@@ -9,6 +9,14 @@ import sessionModel from "../models/session.model.js";
 import nodemailer from "nodemailer";
 import exchangeCodeModel from "../models/exchangeCode.model.js";
 
+// Cookie options helper - development में secure: false, production में true
+const getCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  sameSite: "Lax",
+});
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -78,12 +86,7 @@ export async function signup(req, res) {
       },
     );
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: "Lax",
-    });
+    res.cookie("refreshToken", refreshToken, getCookieOptions());
 
     try {
       await sendWelcomeEmail(email, username);
@@ -157,12 +160,7 @@ export async function login(req, res) {
     { expiresIn: "15m" },
   );
 
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "Lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie("refreshToken", refreshToken, getCookieOptions());
 
   try {
     await sendWelcomeEmail(email, user.username);
@@ -181,7 +179,7 @@ export async function login(req, res) {
 }
 
 export async function exchange(req, res) {
-   try {
+  try {
     const { code } = req.body;
     if (!code) return res.status(400).json({ error: "Code required" });
 
@@ -195,12 +193,7 @@ export async function exchange(req, res) {
 
     // ✅ Ab cookie yaha set hogi — ye request /api/exchange se aayi hai,
     // jo Vercel rewrite proxy se hoke aayi (same-origin treat hogi)
-    res.cookie("refreshToken", record.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("refreshToken", record.refreshToken, getCookieOptions());
 
     res.json({ success: true });
   } catch (error) {

@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        console.log("Verified user:", data);
         setUser(data.user || data);
         setIsAuthenticated(true);
       } else {

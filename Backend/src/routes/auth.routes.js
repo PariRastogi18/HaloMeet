@@ -24,7 +24,7 @@ const router = Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.get("/verify", verifyRefreshTokenMiddleware, async (req, res) => {
-  const user = await userModel.findById(req.user.id).select("username");
+  const user = await userModel.findById(req.user.id).select("username email");
   if (!user) {
     return res.status(401).json({ message: "User not found or token invalid" });
   }
@@ -32,6 +32,7 @@ router.get("/verify", verifyRefreshTokenMiddleware, async (req, res) => {
     user: {
       id: user._id,
       username: user.username,
+      email: user.email,
     },
   });
 });
