@@ -43,7 +43,7 @@ export default function VerifyOtp() {
     const API = import.meta.env.VITE_API_URL;
 
     try {
-      const BACKEND_URL = `${API}/api/auth/verifyOtp`;
+      const BACKEND_URL = `/api/auth/verifyOtp`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {

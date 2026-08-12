@@ -1,12 +1,30 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function AuthSuccessPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    navigate("/", { replace: true });
-  }, [navigate]);
+    const code = searchParams.get("code");
+    if (!code) {
+      navigate("/signIn?error=missing_code");
+      return;
+    }
+
+    fetch("/api/auth/exchange", {
+      method: "POST",
+      credentials: "include", // zaroori hai — cookie set hone ke liye
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Exchange failed");
+        return res.json();
+      })
+      .then(() => navigate("/"))
+      .catch(() => navigate("/signIn?error=exchange_failed"));
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">

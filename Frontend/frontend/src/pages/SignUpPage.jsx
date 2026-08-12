@@ -41,7 +41,7 @@ export default function SignUp() {
 
     try {
       
-      const BACKEND_URL = `${API}/api/auth/signup`;
+      const BACKEND_URL = `/api/auth/signup`;
 
       const response = await fetch(BACKEND_URL, {
         method: "POST",

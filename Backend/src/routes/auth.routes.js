@@ -9,6 +9,7 @@ import {
   sendOtp,
   verifyOtp,
   resetPassword,
+  exchange,
 } from "../controllers/auth.controller.js";
 import { authorization } from "../middlewares/auth.middleware.js";
 import { verifyRefreshTokenMiddleware } from "../middlewares/verifyRefreshTokenMiddleware.js";
@@ -61,15 +62,16 @@ router.get(
         userAgent: req.headers["user-agent"],
       });
 
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+      const exchangeCode = crypto.randomBytes(32).toString("hex");
+
+      await exchangeCodeModel.create({
+        code: exchangeCode,
+        refreshToken, 
+        expiresAt: new Date(Date.now() + 2 * 60 * 1000), // 2 min expiry
       });
 
       const clientUrl = process.env.CLIENT_URL;
-      return res.redirect(`${clientUrl}/auth-success`);
+      return res.redirect(`${clientUrl}/auth-success?code=${exchangeCode}`);
     } catch (error) {
       console.error("Google login error", error);
       const clientUrl = process.env.CLIENT_URL;
@@ -84,5 +86,6 @@ router.get("/refreshToken", verifyRefreshTokenMiddleware, refreshToken);
 router.post("/sendOtp", sendOtp);
 router.post("/verifyOtp", verifyOtp);
 router.post("/resetPassword", resetPassword);
+router.post("/exchange", exchange);
 
 export default router;

@@ -10,7 +10,7 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const BACKEND_URL = `${API}/api/auth/sendOtp`;
+      const BACKEND_URL = `/api/auth/sendOtp`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {

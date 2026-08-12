@@ -7,6 +7,7 @@ import httpStatus from "http-status";
 import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
 import nodemailer from "nodemailer";
+import exchangeCodeModel from "../models/exchangeCode.model.js";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -81,7 +82,7 @@ export async function signup(req, res) {
       httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: "none",
+      sameSite: "Lax",
     });
 
     try {
@@ -159,7 +160,7 @@ export async function login(req, res) {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: "Lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
@@ -177,6 +178,35 @@ export async function login(req, res) {
     },
     accessToken,
   });
+}
+
+export async function exchange(req, res) {
+   try {
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ error: "Code required" });
+
+    const record = await exchangeCodeModel.findOne({ code });
+    if (!record || record.expiresAt < new Date()) {
+      return res.status(400).json({ error: "Invalid or expired code" });
+    }
+
+    // Ek baar use hone ke baad turant delete kar dein (replay attack se bachne ke liye)
+    await exchangeCodeModel.deleteOne({ code });
+
+    // ✅ Ab cookie yaha set hogi — ye request /api/exchange se aayi hai,
+    // jo Vercel rewrite proxy se hoke aayi (same-origin treat hogi)
+    res.cookie("refreshToken", record.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Exchange error", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 }
 
 const generateOtp = () => {
@@ -340,7 +370,7 @@ export async function refreshToken(req, res) {
     httpOnly: true,
     secure: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: "none",
+    sameSite: "Lax",
   });
 
   res.status(200).json({
@@ -372,7 +402,7 @@ export async function logout(req, res) {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: "Lax",
   });
 
   return res.status(httpStatus.OK).json({
@@ -395,7 +425,7 @@ export async function logoutAll(req, res) {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: "Lax",
   });
 
   res.status(httpStatus.OK).json({

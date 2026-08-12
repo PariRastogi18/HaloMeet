@@ -34,7 +34,7 @@ export default function SignInPage() {
     setMessage({ type: "", text: "" });
 
     try {
-      const BACKEND_URL = `${API}/api/auth/login`;
+      const BACKEND_URL = `/api/auth/login`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {
