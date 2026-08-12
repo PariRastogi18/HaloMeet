@@ -338,9 +338,9 @@ export async function refreshToken(req, res) {
     .digest("hex");
   res.cookie("refreshToken", newRefreshTokenHash, {
     httpOnly: true,
-    secure: false,
+    secure: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: "strict",
+    sameSite: "none",
   });
 
   res.status(200).json({
