@@ -31,9 +31,11 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use("/api/auth", authRouter);
 
+const PORT = process.env.PORT;
+
 connectDB();
 const start = async () => {
-  server.listen("5000", () => {
+  server.listen(PORT, () => {
     console.log("Server listing on port 5000");
   });
 };
