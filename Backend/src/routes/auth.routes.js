@@ -9,7 +9,6 @@ import {
   sendOtp,
   verifyOtp,
   resetPassword,
-  exchange,
 } from "../controllers/auth.controller.js";
 import { authorization } from "../middlewares/auth.middleware.js";
 import { verifyRefreshTokenMiddleware } from "../middlewares/verifyRefreshTokenMiddleware.js";
@@ -18,6 +17,7 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
+import exchangeCodeModel from "../models/exchangeCode.model.js";
 
 const router = Router();
 
