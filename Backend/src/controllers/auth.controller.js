@@ -23,6 +23,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL,
     pass: process.env.EMAIL_PASSWORD,
   },
+  connectionTimeout: 10000,
 });
 
 const sendWelcomeEmail = async (receiverEmail, receiverName) => {
@@ -89,7 +90,7 @@ export async function signup(req, res) {
     res.cookie("refreshToken", refreshToken, getCookieOptions());
 
     try {
-      await sendWelcomeEmail(email, username);
+      sendWelcomeEmail(email, username);
     } catch (error) {
       console.log(`Email send error: ${error}`);
     }
@@ -163,7 +164,7 @@ export async function login(req, res) {
   res.cookie("refreshToken", refreshToken, getCookieOptions());
 
   try {
-    await sendWelcomeEmail(email, user.username);
+    sendWelcomeEmail(email, user.username);
   } catch (error) {
     console.log(`Email send error: ${error}`);
   }
