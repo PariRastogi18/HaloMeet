@@ -9,6 +9,7 @@ import {
   sendOtp,
   verifyOtp,
   resetPassword,
+  exchange,
 } from "../controllers/auth.controller.js";
 import { authorization } from "../middlewares/auth.middleware.js";
 import { verifyRefreshTokenMiddleware } from "../middlewares/verifyRefreshTokenMiddleware.js";
@@ -67,7 +68,7 @@ router.get(
 
       await exchangeCodeModel.create({
         code: exchangeCode,
-        refreshToken, 
+        refreshToken,
         expiresAt: new Date(Date.now() + 2 * 60 * 1000), // 2 min expiry
       });
 
