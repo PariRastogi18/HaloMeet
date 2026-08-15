@@ -79,7 +79,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black dark:bg-gray-900 text-white font-sans selection:bg-purple-600 selection:text-white px-4 sm:px-6">
+    <div className="min-h-screen bg-black dark:bg-gray-900 text-white font-sans selection:bg-purple-600 selection:text-white">
       {/* Navbar */}
       <Navbar />
       {/* Decorative Glow */}
