@@ -19,6 +19,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
 import exchangeCodeModel from "../models/exchangeCode.model.js";
+import { createMeeting, joinMeeting } from "../controllers/meeting.controller.js";
 
 const router = Router();
 
@@ -89,5 +90,7 @@ router.post("/sendOtp", sendOtp);
 router.post("/verifyOtp", verifyOtp);
 router.post("/resetPassword", resetPassword);
 router.post("/exchange", exchange);
+router.post("/createMeeting", authorization, createMeeting);
+router.post("/joinMeeting", joinMeeting);
 
 export default router;
