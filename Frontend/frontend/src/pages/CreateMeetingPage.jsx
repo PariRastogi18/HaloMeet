@@ -42,7 +42,10 @@ export default function CreateMeetingPage() {
         credentials: "include",
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json")
+        ? await response.json()
+        : { message: "The server returned an unexpected response. Please try again." };
       if (response.ok) {
         alert(data.message);
 
@@ -53,7 +56,8 @@ export default function CreateMeetingPage() {
         alert(data.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Unable to create meeting:", error);
+      alert("Unable to create the meeting. Please try again.");
     }
   };
 

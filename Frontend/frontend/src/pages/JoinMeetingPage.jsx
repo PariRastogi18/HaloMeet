@@ -34,7 +34,10 @@ export default function JoinMeetingPage() {
         credentials: "include",
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json")
+        ? await response.json()
+        : { message: "The server returned an unexpected response. Please try again." };
       if (response.ok) {
         alert(data.message);
         navigate(`/meet/${roomId.trim()}`);
@@ -42,7 +45,8 @@ export default function JoinMeetingPage() {
         alert(data.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Unable to join meeting:", error);
+      alert("Unable to join the meeting. Please try again.");
     }
   };
 
