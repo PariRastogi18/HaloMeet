@@ -32,9 +32,9 @@ export async function createMeeting(req, res) {
 
 export async function joinMeeting(req, res) {
   try {
-    const { meetingName, meetingCode } = req.body;
+    const { meetingCode } = req.body;
 
-    const meeting = await meetingModel.findOne({ meetingName, meetingCode });
+    const meeting = await meetingModel.findOne({ meetingCode });
 
     if (!meeting) {
       return res.status(httpStatus.NOT_FOUND).json({

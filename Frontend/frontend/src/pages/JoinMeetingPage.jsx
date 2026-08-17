@@ -15,13 +15,34 @@ export default function JoinMeetingPage() {
 
   const [roomId, setRoomId] = useState("");
 
-  const joinMeeting = () => {
+  const joinMeeting = async() => {
     if (!roomId.trim()) {
       alert("Please enter a Room ID");
       return;
     }
+    try {
+      const BACKEND_URL = "/api/auth/joinMeeting";
+      const response = await fetch(BACKEND_URL, {
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meetingCode: roomId.trim(),
+        }),
+        credentials: "include",
+      });
 
-    navigate(`/meet/${meetingName}?${roomId}`);
+      const data = await response.json();
+      if(response.ok){
+        alert(data.message);
+        navigate(`/meet/${roomId.trim()}`);
+      }else{
+        alert(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -68,7 +89,7 @@ export default function JoinMeetingPage() {
 
           {/* meeting name */}
 
-          <div className="mt-8">
+          {/* <div className="mt-8">
             <label className="text-gray-300 mb-2 block">Meeting Name</label>
 
             <div className="flex items-center rounded-xl bg-[#23212d] border border-purple-500/20 px-4">
@@ -83,7 +104,7 @@ export default function JoinMeetingPage() {
                 className="w-full bg-transparent px-4 py-4 text-white outline-none placeholder:text-gray-500"
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Room ID */}
 

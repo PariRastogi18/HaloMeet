@@ -28,8 +28,8 @@ export default function CreateMeetingPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          meetingName: meetingName,
-          meetingCode: id,
+          meetingName: meetingName.trim(),
+          meetingCode: id.trim(),
         }),
         credentials: "include",
       });
@@ -39,9 +39,7 @@ export default function CreateMeetingPage() {
         alert(data.message);
 
         setMeetingLink(
-        `${window.location.origin}/meet/${encodeURIComponent(
-          meetingName.trim()
-        )}?meetingCode=${id}`
+        `${window.location.origin}/meet/${id.trim()}`
       );
       }else{
         alert(data.message);
@@ -64,7 +62,7 @@ export default function CreateMeetingPage() {
   const startMeeting = () => {
     if (meetingName.length === 0 || !roomId) return;
 
-    navigate(`/meet/${meetingName}?${roomId}`);
+    navigate(`/meet/?${roomId}`);
   };
 
   return (
