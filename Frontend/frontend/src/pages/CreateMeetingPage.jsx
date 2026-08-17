@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Video, Copy, Sparkles, CheckCircle2, Link2, AwardIcon } from "lucide-react";
+import {
+  Video,
+  Copy,
+  Sparkles,
+  CheckCircle2,
+  Link2,
+  AwardIcon,
+} from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -11,7 +18,7 @@ export default function CreateMeetingPage() {
   const [roomId, setRoomId] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
 
-  const generateMeeting = async() => {
+  const generateMeeting = async () => {
     if (meetingName.length === 0) {
       alert("Before create meeting, require meeting name!");
       return;
@@ -23,7 +30,7 @@ export default function CreateMeetingPage() {
     try {
       const BACKEND_URL = "/api/auth/createMeeting";
       const response = await fetch(BACKEND_URL, {
-        method:"POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -35,21 +42,18 @@ export default function CreateMeetingPage() {
       });
 
       const data = await response.json();
-      if(response.ok){
+      if (response.ok) {
         alert(data.message);
 
-        setMeetingLink(
-        `${window.location.origin}/meet/${id.trim()}`
-      );
-      }else{
+        setMeetingLink(`${window.location.origin}/meet/${id.trim()}`);
+
+        console.log(setMeetingLink);
+      } else {
         alert(data.message);
       }
     } catch (error) {
       console.log(error);
     }
-
-
-  
   };
 
   const copyLink = async () => {
