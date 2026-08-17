@@ -17,6 +17,7 @@ export default function CreateMeetingPage() {
   const [meetingName, setMeetingName] = useState("");
   const [roomId, setRoomId] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
+  const API = import.meta.env.VITE_API_URL;
 
   const generateMeeting = async () => {
     if (meetingName.length === 0) {
@@ -28,7 +29,7 @@ export default function CreateMeetingPage() {
     setRoomId(id);
 
     try {
-      const BACKEND_URL = "/api/auth/createMeeting";
+      const BACKEND_URL = `${API}/api/auth/createMeeting`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {

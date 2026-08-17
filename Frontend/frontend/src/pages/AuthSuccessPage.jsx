@@ -12,7 +12,9 @@ export default function AuthSuccessPage() {
       return;
     }
 
-    fetch("/api/auth/exchange", {
+    const API = import.meta.env.VITE_API_URL;
+
+    fetch(`${API}/api/auth/exchange`, {
       method: "POST",
       credentials: "include", // zaroori hai — cookie set hone ke liye
       headers: { "Content-Type": "application/json" },

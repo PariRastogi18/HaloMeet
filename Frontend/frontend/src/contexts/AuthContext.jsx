@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/auth/verify`, {
+      const response = await fetch(`${API}/api/auth/verify`, {
         method: "GET",
         credentials: "include",
       });

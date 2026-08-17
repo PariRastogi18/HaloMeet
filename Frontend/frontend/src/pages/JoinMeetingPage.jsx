@@ -9,21 +9,22 @@ export default function JoinMeetingPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [meetingName, setMeetingName] = useState("");
+  const API = import.meta.env.VITE_API_URL;
 
   // Login user
   const username = user.username; // Replace with logged-in user
 
   const [roomId, setRoomId] = useState("");
 
-  const joinMeeting = async() => {
+  const joinMeeting = async () => {
     if (!roomId.trim()) {
       alert("Please enter a Room ID");
       return;
     }
     try {
-      const BACKEND_URL = "/api/auth/joinMeeting";
+      const BACKEND_URL = `${API}/api/auth/joinMeeting`;
       const response = await fetch(BACKEND_URL, {
-        method:"POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -34,10 +35,10 @@ export default function JoinMeetingPage() {
       });
 
       const data = await response.json();
-      if(response.ok){
+      if (response.ok) {
         alert(data.message);
         navigate(`/meet/${roomId.trim()}`);
-      }else{
+      } else {
         alert(data.message);
       }
     } catch (error) {

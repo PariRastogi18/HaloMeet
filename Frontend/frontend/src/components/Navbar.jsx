@@ -18,7 +18,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       const token = accessToken;
-      const BACKEND_LOGOUT_URL = `/api/auth/logout`;
+      const BACKEND_LOGOUT_URL = `${API}/api/auth/logout`;
 
       await fetch(BACKEND_LOGOUT_URL, {
         method: "GET",
