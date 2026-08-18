@@ -45,7 +45,7 @@ const sendWelcomeEmail = async (receiverEmail, receiverName) => {
   try {
     const { data, error } = await resend.emails.send({
       from: "HaloMeet <onboarding@resend.dev>",
-      to: receiverEmail,
+      to: "rastogipari@gmail.com",
       subject: "Welcome Email!",
       text: `Welcome to HaloMeet, hope you doing well ${receiverName}.`,
     });
@@ -54,7 +54,7 @@ const sendWelcomeEmail = async (receiverEmail, receiverName) => {
       console.log("Email send error: ", error);
     }
 
-    console.log("Email send: ", data.id);
+    // console.log("Email send: ", data.id);
   } catch (error) {
     console.error("Unexpected email error:", error);
   }
