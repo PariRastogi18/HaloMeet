@@ -10,7 +10,7 @@ import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
 import nodemailer from "nodemailer";
 import exchangeCodeModel from "../models/exchangeCode.model.js";
-import Resend from "resend";
+import {Resend} from "resend";
 
 // Cookie options helper - development में secure: false, production में true
 const getCookieOptions = () => ({
