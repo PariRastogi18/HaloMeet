@@ -18,6 +18,7 @@ import {
   User,
   ArrowRight,
 } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 // import "../styles/videoComponent.css";
 // import Draggable from "react-draggable";
@@ -113,19 +114,49 @@ export default function VideoMeetComponent() {
   };
 
   useEffect(() => {
-    getPermissions();
-    const updateConfig = () => {
-      const isMobile = window.innerWidth < 640;
-      setRndConfig({
-        x: window.innerWidth - (isMobile ? 140 : 320),
-        y: 20,
-        width: isMobile ? 120 : 300,
-        height: isMobile ? 80 : 180,
+
+    try {
+      const {url} = useParams();
+      const BACKEND_URL = `${API}/api/auth/joinMeeting`;
+      const response = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meetingCode: url,
+        }),
+        credentials: "include",
       });
-    };
-    updateConfig();
-    window.addEventListener("resize", updateConfig);
-    return () => window.removeEventListener("resize", updateConfig);
+
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json")
+        ? await response.json()
+        : { message: "The server returned an unexpected response. Please try again." };
+      if (response.ok) {
+        alert(data.message);
+        navigate(`/meet/${roomId.trim()}`);
+        getPermissions();
+        const updateConfig = () => {
+          const isMobile = window.innerWidth < 640;
+          setRndConfig({
+            x: window.innerWidth - (isMobile ? 140 : 320),
+            y: 20,
+            width: isMobile ? 120 : 300,
+            height: isMobile ? 80 : 180,
+          });
+        };
+        updateConfig();
+        window.addEventListener("resize", updateConfig);
+        return () => window.removeEventListener("resize", updateConfig);
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Unable to join meeting:", error);
+      alert("Unable to join the meeting. Please try again.");
+      navigate("/joinMeeting");
+    }
   }, []);
 
   let getUserMediaSuccess = (stream) => {
