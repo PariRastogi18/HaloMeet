@@ -14,7 +14,7 @@ const getCookieOptions = () => ({
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   maxAge: 7 * 24 * 60 * 60 * 1000,
-  sameSite: "Lax",
+  sameSite: "none",
 });
 
 const transporter = nodemailer.createTransport({
@@ -391,7 +391,7 @@ export async function logout(req, res) {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "Lax",
+    sameSite: "none",
   });
 
   return res.status(httpStatus.OK).json({
@@ -414,7 +414,7 @@ export async function logoutAll(req, res) {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "Lax",
+    sameSite: "none",
   });
 
   res.status(httpStatus.OK).json({
