@@ -56,7 +56,7 @@ const sendWelcomeEmail = async (receiverEmail, receiverName) => {
 
     console.log("Email send: ", data.id);
   } catch (error) {
-    console.error("Unexpected email error:", err);
+    console.error("Unexpected email error:", error);
   }
 };
 
