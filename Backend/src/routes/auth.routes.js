@@ -90,7 +90,7 @@ router.post("/sendOtp", sendOtp);
 router.post("/verifyOtp", verifyOtp);
 router.post("/resetPassword", resetPassword);
 router.post("/exchange", exchange);
-router.post("/createMeeting", authorization, createMeeting);
+router.post("/createMeeting", verifyRefreshTokenMiddleware, createMeeting);
 router.post("/joinMeeting", joinMeeting);
 
 export default router;
