@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { config } from "../config/config.js";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcrypt";
@@ -8,6 +10,7 @@ import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
 import nodemailer from "nodemailer";
 import exchangeCodeModel from "../models/exchangeCode.model.js";
+import Resend from "resend";
 
 // Cookie options helper - development में secure: false, production में true
 const getCookieOptions = () => ({
@@ -17,24 +20,44 @@ const getCookieOptions = () => ({
   sameSite: "none",
 });
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-  connectionTimeout: 10000,
-});
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL,
+//     pass: process.env.EMAIL_PASSWORD,
+//   },
+//   connectionTimeout: 10000,
+// });
+
+// const sendWelcomeEmail = async (receiverEmail, receiverName) => {
+//   const message = {
+//     from: process.env.EMAIL,
+//     to: receiverEmail,
+//     subject: "Welcome Email!",
+//     text: `Welcome to HaloMeet, hope you doing well ${receiverName}.`,
+//   };
+
+//   const info = await transporter.sendMail(message);
+// };
 
 const sendWelcomeEmail = async (receiverEmail, receiverName) => {
-  const message = {
-    from: process.env.EMAIL,
-    to: receiverEmail,
-    subject: "Welcome Email!",
-    text: `Welcome to HaloMeet, hope you doing well ${receiverName}.`,
-  };
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "HaloMeet <onboarding@resend.dev>",
+      to: receiverEmail,
+      subject: "Welcome Email!",
+      text: `Welcome to HaloMeet, hope you doing well ${receiverName}.`,
+    });
 
-  const info = await transporter.sendMail(message);
+    if (error) {
+      console.log("Email send error: ", error);
+    }
+
+    console.log("Email send: ", data.id);
+  } catch (error) {
+    console.error("Unexpected email error:", err);
+  }
 };
 
 export async function signup(req, res) {
