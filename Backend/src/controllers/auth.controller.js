@@ -45,7 +45,7 @@ const sendWelcomeEmail = async (receiverEmail, receiverName) => {
   try {
     const { data, error } = await resend.emails.send({
       from: "HaloMeet <onboarding@resend.dev>",
-      to: "rastogipari@gmail.com",
+      to: "rastogipari129@gmail.com",
       subject: "Welcome Email!",
       text: `Welcome to HaloMeet, hope you doing well ${receiverName}.`,
     });
