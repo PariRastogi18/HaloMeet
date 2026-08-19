@@ -18,7 +18,7 @@ import {
   User,
   ArrowRight,
 } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // import "../styles/videoComponent.css";
 // import Draggable from "react-draggable";
@@ -35,13 +35,17 @@ const peerConfigConnections = {
   iceServers: [{ urls: "stun:stun1.l.google.com:19302" }],
 };
 export default function VideoMeetComponent() {
+  const navigate = useNavigate();
+  const { url } = useParams();
+  const [isCheckingMeeting, setIsCheckingMeeting] = useState(true);
+  const [isValidate, setIsValidate] = useState(false);
+
   const [rndConfig, setRndConfig] = useState({
     x: 20,
     y: 20,
     width: 160,
     height: 100,
   });
-
 
   const socketRef = useRef();
   const socketIdRef = useRef();
@@ -114,49 +118,56 @@ export default function VideoMeetComponent() {
   };
 
   useEffect(() => {
+    const validateMeeting = async () => {
+      try {
+        const BACKEND_URL = `${API}/api/auth/joinMeeting`;
+        const response = await fetch(BACKEND_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            meetingCode: url,
+          }),
+          credentials: "include",
+        });
 
-    try {
-      const {url} = useParams();
-      const BACKEND_URL = `${API}/api/auth/joinMeeting`;
-      const response = await fetch(BACKEND_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          meetingCode: url,
-        }),
-        credentials: "include",
-      });
-
-      const contentType = response.headers.get("content-type") || "";
-      const data = contentType.includes("application/json")
-        ? await response.json()
-        : { message: "The server returned an unexpected response. Please try again." };
-      if (response.ok) {
-        alert(data.message);
-        navigate(`/meet/${roomId.trim()}`);
-        getPermissions();
-        const updateConfig = () => {
-          const isMobile = window.innerWidth < 640;
-          setRndConfig({
-            x: window.innerWidth - (isMobile ? 140 : 320),
-            y: 20,
-            width: isMobile ? 120 : 300,
-            height: isMobile ? 80 : 180,
-          });
-        };
-        updateConfig();
-        window.addEventListener("resize", updateConfig);
-        return () => window.removeEventListener("resize", updateConfig);
-      } else {
-        alert(data.message);
+        const contentType = response.headers.get("content-type") || "";
+        const data = contentType.includes("application/json")
+          ? await response.json()
+          : {
+              message:
+                "The server returned an unexpected response. Please try again.",
+            };
+        if (response.ok) {
+          setIsValidate(true);
+          getPermissions();
+        } else {
+          alert(data.message || "Invalid meeting code.");
+          navigate("/joinMeeting");
+        }
+      } catch (error) {
+        console.error("Unable to join meeting:", error);
+        alert("Unable to join the meeting. Please try again.");
+        navigate("/joinMeeting");
+      } finally {
+        setIsCheckingMeeting(false);
       }
-    } catch (error) {
-      console.error("Unable to join meeting:", error);
-      alert("Unable to join the meeting. Please try again.");
-      navigate("/joinMeeting");
-    }
+    };
+
+    validateMeeting();
+    const updateConfig = () => {
+      const isMobile = window.innerWidth < 640;
+      setRndConfig({
+        x: window.innerWidth - (isMobile ? 140 : 320),
+        y: 20,
+        width: isMobile ? 120 : 300,
+        height: isMobile ? 80 : 180,
+      });
+    };
+    updateConfig();
+    window.addEventListener("resize", updateConfig);
+    return () => window.removeEventListener("resize", updateConfig);
   }, []);
 
   let getUserMediaSuccess = (stream) => {
@@ -521,7 +532,11 @@ export default function VideoMeetComponent() {
 
   return (
     <div>
-      {askForUsername === true ? (
+      {isCheckingMeeting ? (
+        <div className="min-h-screen flex items-center justify-center bg-black text-white">
+          Checking meeting code...
+        </div>
+      ) : !isValidate ? null : askForUsername === true ? (
         <div className="min-h-screen bg-linear-to-br from-[#09090B] via-[#111827] to-[#1A1038]  selection:bg-purple-600 selection:text-white">
           <Navbar />
           {/* Background Glow */}
