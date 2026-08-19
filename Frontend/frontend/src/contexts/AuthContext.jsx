@@ -23,9 +23,21 @@ export function AuthProvider({ children }) {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API}/api/auth/verify`, {
-        method: "GET",
+      const refreshResponse = await fetch(`${API}/api/auth/refreshToken`, {
         credentials: "include",
+      });
+
+      if (!refreshResponse.ok) throw new Error("Session expired");
+
+      const { accessToken } = await refreshResponse.json();
+      setAccessToken(accessToken);
+
+      const response = await fetch(`${API}/api/auth/get-me`, {
+        method:"GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        credentials:"include",
       });
 
       if (response.ok) {

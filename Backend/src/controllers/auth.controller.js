@@ -383,7 +383,7 @@ export async function refreshToken(req, res) {
     .createHash("sha256")
     .update(newRefreshToken)
     .digest("hex");
-  res.cookie("refreshToken", newRefreshTokenHash, getCookieOptions());
+  res.cookie("refreshToken", newRefreshToken, getCookieOptions());
 
   res.status(200).json({
     message: "Access token refreshed successfully",
