@@ -10,9 +10,11 @@ import {
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function CreateMeetingPage() {
   const navigate = useNavigate();
+  const {accessToken} = useAuth();
 
   const [meetingName, setMeetingName] = useState("");
   const [roomId, setRoomId] = useState("");
@@ -34,6 +36,7 @@ export default function CreateMeetingPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           meetingName: meetingName.trim(),
