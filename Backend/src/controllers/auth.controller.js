@@ -330,7 +330,7 @@ export async function getMe(req, res) {
     res.status(httpStatus.OK).json({
       message: "User fetched successfully",
       user: {
-        user: user.username,
+        username: user.username,
         email: user.email,
       },
     });
