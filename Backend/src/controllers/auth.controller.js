@@ -10,7 +10,7 @@ import crypto from "crypto";
 import sessionModel from "../models/session.model.js";
 import nodemailer from "nodemailer";
 import exchangeCodeModel from "../models/exchangeCode.model.js";
-import {Resend} from "resend";
+import { Resend } from "resend";
 
 // Cookie options helper - development में secure: false, production में true
 const getCookieOptions = () => ({
@@ -346,7 +346,7 @@ export async function refreshToken(req, res) {
   const refreshToken = req.refreshToken;
   const decoded = req.user;
 
-  const user = await userModel.findOne(decoded.id);
+  const user = await userModel.findById(decoded.id);
   if (!user) {
     return res.status(httpStatus.UNAUTHORIZED).json({
       message: "User not found",
@@ -383,6 +383,11 @@ export async function refreshToken(req, res) {
     .createHash("sha256")
     .update(newRefreshToken)
     .digest("hex");
+
+  await sessionModel.findByIdAndUpdate(session._id, {
+    refreshTokenHash: newRefreshTokenHash,
+  });
+
   res.cookie("refreshToken", newRefreshToken, getCookieOptions());
 
   res.status(200).json({
