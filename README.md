@@ -4,7 +4,7 @@ HeloMeet is a full-stack MERN video conferencing application that allows users t
 
 ## 🌐 Live Demo
 
-- **Frontend:** https://halomeet-frontend.onrender.com
+- **Frontend:** https://halo-meet-3-gs9xiz1f7-pari-rastogis-projects.vercel.app
 - **Backend:** https://halomeet-backend.onrender.com
 
 ---
